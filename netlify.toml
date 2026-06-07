@@ -1,0 +1,9 @@
+# Netlify build configuration for the Astro (Sanctuary) site.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 6 requires Node >= 22.12. Pin so Netlify doesn't build with an older default
+  # (an older Node makes `astro build` fail -> nothing publishes -> 404).
+  NODE_VERSION = "22"
