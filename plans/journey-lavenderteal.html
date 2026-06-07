@@ -1,0 +1,214 @@
+<style>
+  :root{
+    /* Lavender & Teal: muted teal + soft lavender, trauma-informed calm */
+    --plum:#4A4458; --teal:#5E8A8D; --teal-deep:#456D70; --lav:#B3A6C7; --lav-light:#D8CFE0;
+    --bg:#F3F0EA; --white:#FFFFFF; --soft:#EFEAF1;
+    --title:#352f40; --body:#504c57;
+  }
+  .jbrowser{ max-width:860px; margin:0 auto; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(53,47,64,.18); border:1px solid rgba(74,68,88,.12); }
+  .jbar{ background:var(--soft); padding:9px 14px; display:flex; gap:7px; align-items:center; }
+  .jbar i{ width:11px; height:11px; border-radius:50%; display:inline-block; }
+  .jbar .u{ margin-left:14px; font-size:11px; color:var(--plum); background:#fff; padding:3px 12px; border-radius:20px; }
+  .page{ font-family:'Inter',system-ui,sans-serif; color:var(--body); background:var(--bg); }
+  .page .serif{ font-family:Georgia,'Fraunces',serif; }
+  .sec{ padding:46px 44px; position:relative; }
+  .seclabel{ position:absolute; top:14px; right:18px; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:rgba(74,68,88,.4); font-weight:700; }
+  .nav{ display:flex; align-items:center; gap:22px; font-size:12.5px; padding:16px 44px; background:var(--bg); position:sticky; top:0; }
+  .nav .brand{ font-weight:700; color:var(--plum); margin-right:auto; letter-spacing:.01em; }
+  .nav a{ opacity:.78; color:var(--body); }
+  .nav .navcta{ background:var(--teal); color:#fff; padding:8px 16px; border-radius:100px; font-weight:600; }
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding:13px 24px; border-radius:100px; font-size:13.5px; font-weight:600; }
+  .btn.solid{ background:var(--teal); color:#fff; }
+  .btn.ghost{ border:1.5px solid var(--teal); color:var(--teal-deep); }
+  h1.hh{ font-size:46px; line-height:1.06; margin:0 0 16px; font-weight:600; color:var(--title); }
+  h2.sh{ font-size:30px; line-height:1.15; margin:0 0 14px; font-weight:600; color:var(--title); }
+  .kicker{ font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; color:var(--teal); margin:0 0 12px; }
+  .lead{ font-size:15px; line-height:1.65; color:var(--body); max-width:54ch; }
+  .blob{ position:absolute; border-radius:50% 50% 48% 52% / 55% 45% 55% 45%; z-index:0; }
+
+  .hero{ display:grid; grid-template-columns:1.05fr .95fr; gap:30px; align-items:center; }
+  .hero-img{ height:330px; border-radius:200px 200px 18px 18px; background-size:cover; background-position:center; background-color:var(--lav); position:relative; z-index:1; }
+
+  .feelings{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:8px; }
+  .feel{ background:var(--bg); border-radius:16px; padding:22px 20px; border:1px solid rgba(94,138,141,.22); }
+  .feel h4{ margin:0 0 6px; font-size:15px; color:var(--teal-deep); }
+  .feel p{ margin:0; font-size:12.5px; line-height:1.5; color:var(--body); }
+
+  .about{ display:grid; grid-template-columns:.85fr 1.15fr; gap:34px; align-items:center; }
+  .portrait{ height:300px; border-radius:18px; background-size:cover; background-position:center; background-color:var(--lav); }
+  .creds{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+  .creds span{ font-size:11.5px; background:var(--soft); border:1px solid rgba(94,138,141,.3); color:var(--teal-deep); padding:6px 13px; border-radius:100px; font-weight:600; }
+
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:10px; }
+  .step .n{ font-family:Georgia,serif; font-size:34px; color:#fff; font-weight:700; }
+  .step h4{ margin:6px 0 6px; font-size:15px; color:var(--plum); }
+  .step p{ margin:0; font-size:12.5px; line-height:1.5; color:#403a4a; }
+
+  .sessions{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:12px; }
+  .scard{ background:var(--bg); border-radius:18px; padding:24px 22px; border:1px solid rgba(74,68,88,.16); display:flex; flex-direction:column; }
+  .scard.featured{ background:var(--plum); color:#fff; }
+  .scard .stitle{ font-size:16px; font-weight:700; margin:0 0 4px; color:var(--title); }
+  .scard.featured .stitle{ color:#fff; }
+  .scard .sdesc{ font-size:12px; line-height:1.5; color:var(--body); margin:0 0 16px; }
+  .scard.featured .sdesc{ color:var(--lav-light); }
+  .scard .price{ font-family:Georgia,serif; font-size:26px; font-weight:700; margin:0 0 2px; color:var(--teal-deep); }
+  .scard.featured .price{ color:var(--lav); }
+  .scard .per{ font-size:11px; color:#8a8195; margin-bottom:16px; }
+  .scard .sbtn{ margin-top:auto; text-align:center; padding:11px; border-radius:100px; font-size:12.5px; font-weight:600; background:var(--teal); color:#fff; }
+  .scard.featured .sbtn{ background:var(--lav); color:var(--plum); }
+  .scard .tagbadge{ font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--lav); margin-bottom:8px; }
+
+  .quote{ background:var(--teal); color:#fff; }
+  .quote .q{ font-family:Georgia,serif; font-size:25px; line-height:1.4; font-style:italic; max-width:34ch; margin:0 auto; text-align:center; }
+  .quote .qa{ text-align:center; margin-top:16px; font-size:12px; color:var(--lav-light); letter-spacing:.04em; }
+
+  .faq{ background:var(--soft); }
+  .faq .qrow{ border-top:1px solid rgba(74,68,88,.18); padding:16px 0; display:flex; justify-content:space-between; align-items:center; font-size:14px; font-weight:600; color:var(--title); }
+  .faq .qrow span{ color:var(--teal); font-size:20px; }
+
+  .finalcta{ background:var(--plum); color:#fff; text-align:center; }
+  .finalcta h2{ font-size:32px; margin:0 0 12px; color:#fff; }
+  .finalcta p{ color:var(--lav-light); font-size:14px; margin:0 auto 22px; max-width:42ch; }
+  .finalcta .btn.solid{ background:var(--lav); color:var(--plum); }
+
+  .foot{ background:var(--plum); color:var(--lav-light); padding:30px 44px; display:flex; justify-content:space-between; font-size:12px; }
+  .foot a{ display:block; opacity:.85; margin:6px 0; color:var(--lav-light); }
+  @media(max-width:760px){ .hero,.about{grid-template-columns:1fr;} .feelings,.steps,.sessions{grid-template-columns:1fr;} }
+</style>
+
+<div style="max-width:860px;margin:0 auto 14px;">
+  <h2 style="color:#352f40;">Lavender &amp; Teal — full homepage</h2>
+  <p class="subtitle">Our Sanctuary design and content, muted teal as the primary with soft lavender accents on a warm off-white. Scroll top to bottom.</p>
+</div>
+
+<div class="jbrowser">
+  <div class="jbar"><i style="background:#B3A6C7"></i><i style="background:#5E8A8D"></i><i style="background:#4A4458"></i><span class="u">ananya-therapy.in</span></div>
+  <div class="page">
+
+    <div class="nav">
+      <span class="brand">dr. ananya</span>
+      <a>About</a><a>How I work</a><a>Sessions</a><a>FAQ</a>
+      <span class="navcta">Book a session</span>
+    </div>
+
+    <!-- 1 HERO -->
+    <div class="sec hero" style="padding-top:30px;">
+      <span class="seclabel">01 · Hero</span>
+      <div style="position:relative;z-index:1;">
+        <p class="kicker">Therapy &amp; counselling</p>
+        <h1 class="hh serif">A gentle space to feel whole again.</h1>
+        <p class="lead">Compassionate, one-on-one therapy for anxiety, burnout, and finding your footing — at your own pace, in a space that feels safe.</p>
+        <div style="display:flex;gap:12px;margin-top:24px;">
+          <span class="btn solid">Book a session &nbsp;&rarr;</span>
+          <span class="btn ghost">How I work</span>
+        </div>
+      </div>
+      <div>
+        <div class="blob" style="width:150px;height:150px;background:var(--lav);opacity:.65;top:-20px;left:-30px;"></div>
+        <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=700&q=80');"></div>
+      </div>
+    </div>
+
+    <!-- 2 WHO THIS IS FOR -->
+    <div class="sec" style="background:var(--white);">
+      <span class="seclabel">02 · You're not alone</span>
+      <p class="kicker" style="text-align:center;">If you're here, something brought you</p>
+      <h2 class="sh serif" style="text-align:center;max-width:18ch;margin:0 auto 26px;">You don't have to carry it all by yourself.</h2>
+      <div class="feelings">
+        <div class="feel"><h4>Anxious &amp; overwhelmed</h4><p>The racing mind that won't switch off, the tightness you can't name.</p></div>
+        <div class="feel"><h4>Burnt out</h4><p>Running on empty, doing everything, feeling nothing.</p></div>
+        <div class="feel"><h4>In transition</h4><p>A loss, a move, a breakup — standing at a threshold, unsure.</p></div>
+      </div>
+    </div>
+
+    <!-- 3 ABOUT -->
+    <div class="sec about" style="background:var(--bg);">
+      <span class="seclabel">03 · About</span>
+      <div>
+        <div class="blob" style="width:120px;height:120px;background:var(--lav);opacity:.65;bottom:-25px;right:-20px;"></div>
+        <div class="portrait" style="background-image:url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80');position:relative;z-index:1;"></div>
+      </div>
+      <div>
+        <p class="kicker">Hello, I'm Ananya</p>
+        <h2 class="sh serif">Warmth first. Always.</h2>
+        <p class="lead">I'm a licensed clinical psychologist with over a decade of walking alongside people through their hardest seasons. My work is grounded, unhurried, and deeply human — no jargon, no judgement. Just two people in a room, doing honest work.</p>
+        <div class="creds"><span>M.Phil Clinical Psychology</span><span>RCI Licensed</span><span>10+ years</span><span>CBT · Mindfulness</span></div>
+      </div>
+    </div>
+
+    <!-- 4 HOW I WORK -->
+    <div class="sec" style="background:var(--lav);">
+      <span class="seclabel">04 · How I work</span>
+      <p class="kicker" style="color:var(--plum);">The process</p>
+      <h2 class="sh serif" style="max-width:20ch;color:var(--plum);">Gentle, clear steps — so you always know what's next.</h2>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h4>Reach out</h4><p>Book a first session below. A short form helps me understand what you're carrying.</p></div>
+        <div class="step"><div class="n">02</div><h4>We meet</h4><p>A 50-minute session, online or in person. No pressure — we go at your pace.</p></div>
+        <div class="step"><div class="n">03</div><h4>We continue</h4><p>If it feels right, we keep going. You set the rhythm; I hold the space.</p></div>
+      </div>
+    </div>
+
+    <!-- 5 SESSIONS -->
+    <div class="sec" style="background:var(--white);">
+      <span class="seclabel">05 · Sessions  ·  Razorpay</span>
+      <p class="kicker" style="text-align:center;">Work with me</p>
+      <h2 class="sh serif" style="text-align:center;margin-bottom:6px;">Choose what feels right.</h2>
+      <p class="lead" style="text-align:center;margin:0 auto 4px;">Pick a session, choose a time, and pay securely. Confirmation lands in your inbox.</p>
+      <div class="sessions">
+        <div class="scard">
+          <div class="stitle">First Session</div>
+          <p class="sdesc">A gentle 50-minute beginning. Space to share, and to see if we're a fit.</p>
+          <div class="price">₹1,800</div><div class="per">50 minutes · online or in-person</div>
+          <div class="sbtn">Book &amp; pay &rarr;</div>
+        </div>
+        <div class="scard featured">
+          <div class="tagbadge">Most chosen</div>
+          <div class="stitle">Ongoing Therapy</div>
+          <p class="sdesc">Weekly or fortnightly 50-minute sessions for sustained, deeper work.</p>
+          <div class="price">₹1,600</div><div class="per" style="color:var(--lav-light);">per session · 50 minutes</div>
+          <div class="sbtn">Book &amp; pay &rarr;</div>
+        </div>
+        <div class="scard">
+          <div class="stitle">Couples / Pair</div>
+          <p class="sdesc">A 75-minute session to find each other again, with care and structure.</p>
+          <div class="price">₹2,800</div><div class="per">75 minutes · online or in-person</div>
+          <div class="sbtn">Book &amp; pay &rarr;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 QUOTE -->
+    <div class="sec quote">
+      <span class="seclabel" style="color:rgba(255,255,255,.5)">06 · In their words</span>
+      <p class="q">"I came in barely holding on. I left, weeks later, actually breathing again. This space changed me."</p>
+      <p class="qa">— A client, shared with permission</p>
+    </div>
+
+    <!-- 7 FAQ -->
+    <div class="sec faq">
+      <span class="seclabel">07 · FAQ</span>
+      <p class="kicker">Gentle answers</p>
+      <h2 class="sh serif" style="margin-bottom:10px;">Things people often wonder.</h2>
+      <div class="qrow">Is everything confidential? <span>+</span></div>
+      <div class="qrow">Online or in person — which is better? <span>+</span></div>
+      <div class="qrow">What if I've never done therapy before? <span>+</span></div>
+      <div class="qrow">Can I reschedule a session? <span>+</span></div>
+    </div>
+
+    <!-- 8 FINAL CTA -->
+    <div class="sec finalcta">
+      <span class="seclabel" style="color:rgba(255,255,255,.5)">08 · Begin</span>
+      <h2 class="serif">Whenever you're ready, I'm here.</h2>
+      <p>There's no perfect time to start. There's just the next gentle step — and you can take it now.</p>
+      <span class="btn solid">Book your first session &nbsp;&rarr;</span>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="foot">
+      <div><strong style="color:#fff">dr. ananya</strong><br><span style="opacity:.75">Clinical Psychologist · RCI Licensed</span></div>
+      <div><a>About</a><a>Sessions</a><a>FAQ</a></div>
+      <div><a>hello@ananya-therapy.in</a><a>Mon–Sat, by appointment</a><a>Bengaluru &amp; online</a></div>
+    </div>
+
+  </div>
+</div>

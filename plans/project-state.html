@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disha Psychology — Project State (read first)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --clay:#a85d42; --sage:#6b8f71; --sage-dk:#56755b; --sand:#cbb89a; --cream:#f6efe6; --cream2:#fdf8f1; --dark:#3a2e23; --ink:#43352a; --body:#6b5a4a; --line:rgba(168,93,66,.18); --display:'Fraunces',Georgia,serif; --sans:'Hanken Grotesk',system-ui,sans-serif; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:var(--sans); color:var(--body); background:var(--cream); line-height:1.6; -webkit-font-smoothing:antialiased; padding:48px 24px 90px; }
+  main{ max-width:760px; margin:0 auto; }
+  .badge{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#fff; background:var(--clay); padding:5px 11px; border-radius:100px; margin-bottom:16px; }
+  h1{ font-family:var(--display); font-size:40px; color:var(--ink); font-weight:600; line-height:1.05; }
+  .sub{ font-size:15px; margin:10px 0 28px; }
+  h2{ font-family:var(--display); font-size:22px; color:var(--ink); font-weight:600; margin:30px 0 8px; border-top:1px solid var(--line); padding-top:24px; }
+  p{ margin:8px 0; } ul,ol{ margin:8px 0 8px 4px; padding-left:22px; } li{ margin:5px 0; }
+  strong{ color:var(--ink); font-weight:600; } em{ color:var(--clay); font-style:italic; }
+  a{ color:var(--clay); }
+  code{ font-family:ui-monospace,Menlo,monospace; font-size:.86em; background:var(--cream2); border:1px solid var(--line); padding:1px 6px; border-radius:5px; color:#8e4a31; }
+  .grid{ display:grid; grid-template-columns:140px 1fr; gap:6px 16px; font-size:14px; background:var(--cream2); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin:14px 0; }
+  .grid b{ color:var(--ink); }
+  .next{ background:linear-gradient(180deg,#fbf3e7,var(--cream2)); border:1px solid var(--line); border-left:3px solid var(--sand); border-radius:12px; padding:16px 20px; margin:16px 0; }
+  .cmd{ font-family:ui-monospace,Menlo,monospace; font-size:13px; background:var(--dark); color:#e9ddcd; border-radius:10px; padding:13px 16px; margin:10px 0; white-space:pre-wrap; }
+  .files a{ display:block; margin:5px 0; font-size:14px; }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">Read first · project state</span>
+  <h1>Disha Psychology — where we are</h1>
+  <p class="sub">Handoff snapshot so work resumes cleanly even after a context reset. Updated 2026-06-06.</p>
+
+  <h2>What this is</h2>
+  <p>A website for <strong>Disha Jain</strong> (<code>@psywithdish</code>) — PsyD <em>trainee</em>, counsellor &amp; psychology mentor — to take paid counselling clients alongside her university/hospital training. <strong>Counselling-led</strong> site with a secondary "for aspiring psychologists" mentoring path. Building <em>for</em> her (relay content choices; some items need her sign-off).</p>
+  <p>Currently in <strong>concept phase</strong>: design + spec + plan done as HTML mockups. <em>No app code or packages yet</em> — wait for explicit go-ahead before scaffolding/installing.</p>
+
+  <h2>Locked decisions</h2>
+  <div class="grid">
+    <b>Design</b><span>"Sanctuary" — warm clay/sage/cream, Fraunces + Hanken, subtle GSAP motion. Ref: <a href="home-sanctuary-designed.html">home-sanctuary-designed.html</a></span>
+    <b>Positioning</b><span>Counselling-led; mentoring secondary</span>
+    <b>Payment</b><span>1:1 session booking, Razorpay</span>
+    <b>Scheduling</b><span>Cal.com (calendar-synced), custom-built (not a Topmate link)</span>
+    <b>Stack</b><span>Astro (SSR) + Firebase (Firestore/Auth) + Razorpay + Cal.com + GSAP</span>
+    <b>Hosting</b><span>Netlify (<code>@astrojs/netlify</code>)</span>
+    <b>Domain</b><span>jaindisha.in</span>
+  </div>
+
+  <h2>Her real details (from Topmate)</h2>
+  <ul>
+    <li>PsyD trainee at <strong>NIEPVD, Dehradun</strong> · MSc Clinical Psychology · BA Psychology · 7+ yrs.</li>
+    <li>Tagline: <em>"A guide for the mind, a companion for the heart."</em></li>
+    <li>Approach: eclectic — Person-Centred, CBT, REBT, Psychoanalytic.</li>
+    <li>Counselling: ₹599 (40m) · Priority ₹1,299. Mentoring: ₹499–1,890.</li>
+    <li>Links: <a href="https://topmate.io/psywithdish">topmate.io/psywithdish</a> · <a href="https://www.linkedin.com/in/jaindish">LinkedIn</a>.</li>
+  </ul>
+
+  <h2>Open / "later" (user handling)</h2>
+  <ol>
+    <li>Professional photos.</li>
+    <li>Confirm session format (online-only? 40-min).</li>
+    <li>Real FAQ answers + testimonial with written consent.</li>
+    <li>Contact email for booking notifications.</li>
+  </ol>
+  <p><strong>Flags needing Disha's sign-off:</strong> trainee wording (never "Dr." / no implied licensure), testimonial ethics (no soliciting current clients).</p>
+
+  <h2>The docs (all HTML — convention: HTML only)</h2>
+  <div class="files">
+    <a href="index.html">index.html</a> — gallery of everything
+    <a href="design-spec.html">design-spec.html</a> — the design spec (source of truth)
+    <a href="implementation-plan.html">implementation-plan.html</a> — build sequence, structure, API, milestones
+    <a href="marketing-research.html">marketing-research.html</a> — client-outreach research (referrals + Google + directories)
+    <a href="home-sanctuary-designed.html">home-sanctuary-designed.html</a> — the chosen homepage design
+  </div>
+
+  <h2>How to view the mockups</h2>
+  <p>Static server on a fixed port (run from this folder):</p>
+  <div class="cmd">cd /Users/manavsingh/programming/projects/disha-psychology/plans
+python3 -m http.server 8899
+# then open http://localhost:8899/</div>
+
+  <h2>Next step</h2>
+  <div class="next">
+    <b>Implementation plan is written.</b> The likely next actions: (1) build the real Astro site starting at milestone <b>M0/M1</b> (needs package-install approval), or (2) first apply Disha's real content to the Sanctuary mockup so she sees her actual site. Hold for the "later" content + her sign-off on trainee wording before launch (M6).
+  </div>
+</main>
+</body>
+</html>

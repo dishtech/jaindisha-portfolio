@@ -1,0 +1,140 @@
+<style>
+  .pintro{ max-width:820px; margin:0 auto 10px; }
+  .pv{ border-radius:18px; overflow:hidden; margin:0 0 26px; box-shadow:0 10px 36px rgba(0,48,63,.12); border:1px solid rgba(7,95,123,.12); cursor:pointer; transition:transform .22s, box-shadow .22s; background:#fff; }
+  .pv:hover{ transform:translateY(-4px); box-shadow:0 18px 50px rgba(0,48,63,.2); }
+  .pv.selected{ outline:3px solid #075F7B; outline-offset:3px; }
+  .pv-head{ display:flex; align-items:baseline; gap:12px; padding:18px 24px 2px; }
+  .pv-head .tag{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:800; opacity:.5; }
+  .pv-head h3{ margin:0; font-size:22px; color:#0a2730; }
+  .pv-mood{ padding:0 24px 14px; font-size:13px; color:#5a757e; }
+
+  .mh{ display:grid; grid-template-columns:1.05fr .95fr; min-height:230px; }
+  .mh-copy{ padding:26px 28px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:2; }
+  .mh-nav{ display:flex; gap:16px; align-items:center; font-size:11.5px; margin-bottom:20px; }
+  .mh-nav .brand{ font-weight:700; margin-right:auto; }
+  .mh h1{ font-family:Georgia,serif; font-size:30px; line-height:1.08; margin:0 0 10px; font-weight:600; }
+  .mh p{ font-size:12.5px; line-height:1.55; margin:0 0 16px; max-width:38ch; }
+  .mh .cta{ display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:100px; font-size:12px; font-weight:600; width:fit-content; }
+  .mh-img{ background-size:cover; background-position:center; position:relative; }
+  .kick{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; margin-bottom:8px; }
+  .blob{ position:absolute; border-radius:50% 50% 48% 52% / 55% 45% 55% 45%; }
+
+  .strip{ display:flex; border-top:1px solid rgba(7,95,123,.08); }
+  .sw{ flex:1; height:46px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:4px; font-size:9px; font-weight:700; }
+  .usage{ font-size:11.5px; color:#5a757e; padding:11px 24px; border-top:1px solid rgba(7,95,123,.08); line-height:1.5; }
+  .usage b{ color:#075F7B; }
+  @media(max-width:760px){ .mh{ grid-template-columns:1fr; } .mh-img{ min-height:150px; } }
+</style>
+
+<div class="pintro">
+  <h2 style="color:#0a2730;">Four palettes, all from the teal family</h2>
+  <p class="subtitle">Same hero, same words. Only the color logic shifts — which teal leads, what the background is, how warm or deep it feels. Click the one that feels most like her.</p>
+</div>
+
+<!-- 1 CLEAR WATER -->
+<div class="pv card" data-choice="clearwater" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">Variant 1</span><h3>Clear Water</h3></div>
+  <p class="pv-mood">White base, deep-teal accents, near-black text. Clean, credible, clinical-calm. (This is the current one.)</p>
+  <div class="mh" style="background:#fff;">
+    <div class="mh-copy" style="color:#4F4F4F;">
+      <div class="mh-nav"><span class="brand" style="color:#075F7B;">dr. ananya</span><a style="opacity:.7">About</a><a style="opacity:.7">Sessions</a></div>
+      <p class="kick" style="color:#2582A4;">Therapy &amp; counselling</p>
+      <h1 style="color:#0a2730;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#075F7B;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&q=80');background-color:#8BCBD9;">
+      <div class="blob" style="width:90px;height:90px;background:#8BCBD9;opacity:.6;top:-20px;left:-25px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#075F7B;color:#fff;">#075F7B</div>
+    <div class="sw" style="background:#2582A4;color:#fff;">#2582A4</div>
+    <div class="sw" style="background:#8BCBD9;color:#0a2730;">#8BCBD9</div>
+    <div class="sw" style="background:#E8F5F5;color:#0a2730;">#E8F5F5</div>
+    <div class="sw" style="background:#fff;color:#0a2730;border-left:1px solid #eee;">#FFFFFF</div>
+    <div class="sw" style="background:#0a2730;color:#fff;">TEXT</div>
+  </div>
+  <div class="usage"><b>Best for:</b> trust &amp; clarity. Most professional, least colour. Risk: can feel a touch cool/clinical.</div>
+</div>
+
+<!-- 2 OPEN SKY -->
+<div class="pv card" data-choice="opensky" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">Variant 2</span><h3>Open Sky</h3></div>
+  <p class="pv-mood">Pale-aqua washes the whole hero. Airier, lighter, more welcoming — like morning light on water.</p>
+  <div class="mh" style="background:#E8F5F5;">
+    <div class="mh-copy" style="color:#3f5b64;">
+      <div class="mh-nav"><span class="brand" style="color:#075F7B;">dr. ananya</span><a style="opacity:.7">About</a><a style="opacity:.7">Sessions</a></div>
+      <p class="kick" style="color:#2582A4;">Therapy &amp; counselling</p>
+      <h1 style="color:#063f52;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#075F7B;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&q=80');background-color:#8BCBD9;">
+      <div class="blob" style="width:90px;height:90px;background:#fff;opacity:.55;bottom:18px;right:18px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#075F7B;color:#fff;">#075F7B</div>
+    <div class="sw" style="background:#8BCBD9;color:#0a2730;">#8BCBD9</div>
+    <div class="sw" style="background:#D1ECF2;color:#0a2730;">#D1ECF2</div>
+    <div class="sw" style="background:#E8F5F5;color:#0a2730;">#E8F5F5</div>
+    <div class="sw" style="background:#fff;color:#0a2730;border-left:1px solid #eee;">#FFFFFF</div>
+    <div class="sw" style="background:#063f52;color:#fff;">TEXT</div>
+  </div>
+  <div class="usage"><b>Best for:</b> warmth &amp; approachability without leaving the palette. Softest, most inviting. Risk: less contrast/punch.</div>
+</div>
+
+<!-- 3 TIDE & SAND -->
+<div class="pv card" data-choice="tidesand" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">Variant 3</span><h3>Tide &amp; Sand</h3></div>
+  <p class="pv-mood">Teal accents on a soft oat-cream base. Adds gentle human warmth to balance the cool — the most personal of the four.</p>
+  <div class="mh" style="background:#F7F2E8;">
+    <div class="mh-copy" style="color:#5b5448;">
+      <div class="mh-nav"><span class="brand" style="color:#075F7B;">dr. ananya</span><a style="opacity:.7">About</a><a style="opacity:.7">Sessions</a></div>
+      <p class="kick" style="color:#2582A4;">Therapy &amp; counselling</p>
+      <h1 style="color:#0a2730;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#075F7B;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&q=80');background-color:#8BCBD9;">
+      <div class="blob" style="width:90px;height:90px;background:#8BCBD9;opacity:.6;top:-20px;left:-25px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#075F7B;color:#fff;">#075F7B</div>
+    <div class="sw" style="background:#8BCBD9;color:#0a2730;">#8BCBD9</div>
+    <div class="sw" style="background:#E8F5F5;color:#0a2730;">#E8F5F5</div>
+    <div class="sw" style="background:#F7F2E8;color:#5b5448;">#F7F2E8</div>
+    <div class="sw" style="background:#EFE6D4;color:#5b5448;">#EFE6D4</div>
+    <div class="sw" style="background:#0a2730;color:#fff;">TEXT</div>
+  </div>
+  <div class="usage"><b>Best for:</b> personal warmth. Cream neutral keeps it human while teal stays the brand. Bridges your original warm instinct with this palette.</div>
+</div>
+
+<!-- 4 DEEP CURRENT -->
+<div class="pv card" data-choice="deepcurrent" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">Variant 4</span><h3>Deep Current</h3></div>
+  <p class="pv-mood">Darkest-teal hero with aqua light and pale text. Immersive and grounded, then the page opens to light below.</p>
+  <div class="mh" style="background:#00303F;">
+    <div class="mh-copy" style="color:#D1ECF2;">
+      <div class="mh-nav"><span class="brand" style="color:#8BCBD9;">dr. ananya</span><a style="opacity:.75">About</a><a style="opacity:.75">Sessions</a></div>
+      <p class="kick" style="color:#8BCBD9;">Therapy &amp; counselling</p>
+      <h1 style="color:#fff;">A gentle space to feel whole again.</h1>
+      <p style="color:#cfe6ec;">Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#8BCBD9;color:#00303F;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&q=80');background-color:#075F7B;">
+      <div class="blob" style="width:90px;height:90px;background:#075F7B;opacity:.7;top:-20px;left:-25px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#00303F;color:#fff;">#00303F</div>
+    <div class="sw" style="background:#075F7B;color:#fff;">#075F7B</div>
+    <div class="sw" style="background:#2582A4;color:#fff;">#2582A4</div>
+    <div class="sw" style="background:#8BCBD9;color:#0a2730;">#8BCBD9</div>
+    <div class="sw" style="background:#D1ECF2;color:#0a2730;">#D1ECF2</div>
+    <div class="sw" style="background:#fff;color:#0a2730;border-left:1px solid #eee;">#FFFFFF</div>
+  </div>
+  <div class="usage"><b>Best for:</b> distinctive &amp; premium. Most memorable, most "designed". Risk: dark hero can feel less soft for a therapy site — we'd keep it to the hero only.</div>
+</div>

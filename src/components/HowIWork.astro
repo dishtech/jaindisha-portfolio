@@ -1,0 +1,97 @@
+---
+import { steps, approach } from '../data/site';
+---
+
+<section id="work">
+  <div class="wrap">
+    <div class="steps-sec">
+      <div class="rv">
+        <p class="kicker">The process</p>
+        <h2 class="h-sec heading">Gentle, clear steps — so you always know what's next.</h2>
+        <p class="approach">{approach}</p>
+      </div>
+      <div class="steps">
+        {
+          steps.map((s) => (
+            <div class="step rv">
+              <div class="num">{s.n}</div>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps-sec {
+    background: linear-gradient(180deg, #efe4d2, #e7d8bf);
+    border-radius: 36px;
+    padding: clamp(48px, 6vw, 80px) clamp(28px, 5vw, 64px);
+  }
+  .heading {
+    max-width: 18ch;
+    margin-top: 12px;
+  }
+  .approach {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(17px, 1.7vw, 21px);
+    color: var(--clay);
+    max-width: 46ch;
+    margin-top: 16px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 34px;
+    margin-top: 48px;
+    position: relative;
+  }
+  .steps::before {
+    content: "";
+    position: absolute;
+    top: 34px;
+    left: 12%;
+    right: 12%;
+    height: 1.5px;
+    background: repeating-linear-gradient(90deg, var(--clay) 0 7px, transparent 7px 16px);
+    opacity: 0.35;
+  }
+  .step {
+    position: relative;
+  }
+  .step .num {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--cream2);
+    border: 1.5px solid var(--clay);
+    color: var(--clay);
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 26px -14px rgba(168, 93, 66, 0.6);
+  }
+  .step h3 {
+    font-size: 23px;
+    margin: 22px 0 9px;
+  }
+  .step p {
+    font-size: 14.5px;
+  }
+
+  @media (max-width: 880px) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+    .steps::before {
+      display: none;
+    }
+  }
+</style>

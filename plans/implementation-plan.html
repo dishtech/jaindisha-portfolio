@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disha Psychology — Implementation Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --clay:#a85d42; --clay-dk:#8e4a31; --sage:#6b8f71; --sage-dk:#56755b; --sand:#cbb89a;
+    --cream:#f6efe6; --cream2:#fdf8f1; --dark:#3a2e23; --ink:#43352a; --body:#6b5a4a; --line:rgba(168,93,66,.18);
+    --display:'Fraunces',Georgia,serif; --sans:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:var(--sans); color:var(--body); background:var(--cream); line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .layout{ display:grid; grid-template-columns:250px 1fr; max-width:1120px; margin:0 auto; gap:48px; padding:0 32px; }
+  aside{ position:sticky; top:0; align-self:start; height:100vh; padding:54px 0; overflow:auto; }
+  aside .badge{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#fff; background:var(--clay); padding:5px 11px; border-radius:100px; margin-bottom:18px; }
+  aside h2{ font-family:var(--display); font-size:21px; color:var(--ink); font-weight:600; line-height:1.15; margin-bottom:22px; }
+  aside nav a{ display:block; font-size:13px; color:var(--body); text-decoration:none; padding:6px 0 6px 12px; border-left:2px solid transparent; margin-left:-2px; transition:color .2s, border-color .2s; }
+  aside nav a:hover{ color:var(--clay); border-color:var(--clay); }
+  main{ padding:54px 0 100px; max-width:740px; }
+  .doc-head{ border-bottom:1px solid var(--line); padding-bottom:26px; margin-bottom:36px; }
+  .doc-head h1{ font-family:var(--display); font-size:clamp(32px,4.6vw,48px); color:var(--ink); font-weight:600; line-height:1.06; }
+  .doc-head .sub{ font-size:15px; margin-top:10px; }
+  section{ margin-bottom:44px; scroll-margin-top:24px; }
+  section > h2{ font-family:var(--display); font-size:25px; color:var(--ink); font-weight:600; margin-bottom:8px; display:flex; align-items:baseline; gap:12px; }
+  section > h2 .n{ font-size:13px; color:var(--clay); font-weight:600; font-family:var(--sans); letter-spacing:.05em; }
+  h3{ font-family:var(--display); font-size:18px; color:var(--ink); font-weight:600; margin:20px 0 6px; }
+  p{ margin:9px 0; } ul,ol{ margin:9px 0 9px 4px; padding-left:22px; } li{ margin:5px 0; }
+  strong{ color:var(--ink); font-weight:600; } em{ color:var(--clay); font-style:italic; }
+  a.inline{ color:var(--clay); }
+  code{ font-family:ui-monospace,Menlo,monospace; font-size:.86em; background:var(--cream2); border:1px solid var(--line); padding:1px 6px; border-radius:5px; color:var(--clay-dk); }
+  .callout{ background:var(--cream2); border:1px solid var(--line); border-left:3px solid var(--sage); border-radius:10px; padding:13px 17px; margin:15px 0; font-size:14px; }
+  .callout.warn{ border-left-color:var(--clay); } .callout b{ color:var(--ink); }
+  table{ width:100%; border-collapse:collapse; margin:15px 0; font-size:13.5px; background:var(--cream2); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  th,td{ text-align:left; padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ background:rgba(168,93,66,.07); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--clay-dk); font-weight:700; }
+  tr:last-child td{ border-bottom:none; }
+  .code{ font-family:ui-monospace,Menlo,monospace; font-size:12.5px; background:var(--dark); color:#e9ddcd; border-radius:12px; padding:18px 20px; line-height:1.5; white-space:pre; overflow:auto; margin:15px 0; }
+  .ms{ display:flex; gap:14px; align-items:flex-start; background:var(--cream2); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:11px 0; }
+  .ms .tag{ flex:0 0 auto; font-family:var(--display); font-weight:600; font-size:15px; color:#fff; background:var(--clay); width:46px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+  .ms h3{ margin:0 0 3px; } .ms p{ margin:3px 0; font-size:14px; }
+  .pill{ display:inline-block; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:100px; background:#e3ecdf; color:var(--sage-dk); margin-left:6px; }
+  @media(max-width:820px){ .layout{ grid-template-columns:1fr; gap:0; } aside{ position:static; height:auto; padding:40px 0 0; } aside nav{ display:flex; flex-wrap:wrap; gap:4px 14px; } aside nav a{ border:none; padding-left:0; margin:0; } main{ padding-top:30px; } }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <span class="badge">Implementation</span>
+    <h2>Build Plan<br>jaindisha.in</h2>
+    <nav>
+      <a href="#stack">1 · Stack &amp; config</a>
+      <a href="#structure">2 · Project structure</a>
+      <a href="#data">3 · Data model</a>
+      <a href="#pages">4 · Pages &amp; components</a>
+      <a href="#api">5 · API routes</a>
+      <a href="#flow">6 · Booking + payment</a>
+      <a href="#admin">7 · Admin dashboard</a>
+      <a href="#motion">8 · Motion (GSAP)</a>
+      <a href="#security">9 · Security &amp; env</a>
+      <a href="#milestones">10 · Milestones</a>
+      <a href="#later">11 · Content slots</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="doc-head">
+      <h1>Implementation Plan</h1>
+      <p class="sub">Build sequence for Disha Jain's counselling-led site. Companion to <a class="inline" href="design-spec.html">design-spec.html</a>. Planning only — no packages installed until you approve scaffolding.</p>
+    </div>
+
+    <section id="stack">
+      <h2><span class="n">01</span> Stack &amp; config</h2>
+      <table>
+        <tr><th>Layer</th><th>Choice</th></tr>
+        <tr><td>Framework</td><td>Astro, <code>output: 'server'</code> (SSR) — API routes + protected admin need a server</td></tr>
+        <tr><td>Adapter</td><td><code>@astrojs/netlify</code> (hosting = Netlify)</td></tr>
+        <tr><td>Domain</td><td><code>jaindisha.in</code> (point DNS at Netlify)</td></tr>
+        <tr><td>Data / Auth</td><td>Firebase — Firestore (bookings) + Auth (admin login) + Admin SDK server-side</td></tr>
+        <tr><td>Scheduling</td><td>Cal.com (API v2) — availability + booking creation, synced to her Google Calendar</td></tr>
+        <tr><td>Payments</td><td>Razorpay — order + checkout + server-side signature verify</td></tr>
+        <tr><td>Styling</td><td>Plain CSS with the Sanctuary tokens (from the mockup) — no Tailwind needed</td></tr>
+        <tr><td>Motion</td><td>GSAP + ScrollTrigger</td></tr>
+        <tr><td>Email</td><td>Cal.com sends booking emails; optional Resend/SMTP for custom confirmations</td></tr>
+      </table>
+      <div class="callout warn"><b>Packages to be added (on your go-ahead):</b> <code>astro</code>, <code>@astrojs/netlify</code>, <code>firebase</code> + <code>firebase-admin</code>, <code>razorpay</code>, <code>gsap</code>. Per project rules I won't install anything until you say so.</div>
+    </section>
+
+    <section id="structure">
+      <h2><span class="n">02</span> Project structure</h2>
+      <div class="code">jaindisha/
+├─ astro.config.mjs          # netlify adapter, output: 'server'
+├─ .env                      # secrets (gitignored)
+├─ src/
+│  ├─ layouts/Base.astro     # html shell, fonts, meta/SEO, grain
+│  ├─ styles/tokens.css      # Sanctuary palette + type scale
+│  ├─ data/sessions.ts       # session types + prices (server source of truth)
+│  ├─ lib/
+│  │  ├─ firebaseAdmin.ts    # server Admin SDK (service account)
+│  │  ├─ firebaseClient.ts   # browser SDK (admin login only)
+│  │  ├─ razorpay.ts         # order create + signature verify
+│  │  └─ cal.ts              # Cal.com API: availability + create booking
+│  ├─ components/
+│  │  ├─ Nav · Hero · Feelings · About · HowIWork
+│  │  ├─ Sessions · Mentoring · Testimonial · Faq · FinalCta · Footer
+│  │  └─ BookingModal.astro  # client island: slot → details → pay
+│  └─ pages/
+│     ├─ index.astro         # the homepage (all sections)
+│     ├─ admin/index.astro   # protected dashboard
+│     └─ api/
+│        ├─ availability.ts  # GET slots from Cal.com
+│        ├─ create-order.ts  # POST → Razorpay order (server-priced)
+│        ├─ verify-payment.ts# POST → verify sig, book Cal, write Firestore
+│        └─ cal-webhook.ts   # booking reschedule/cancel/complete → Firestore
+└─ public/                   # images, favicon, og image</div>
+    </section>
+
+    <section id="data">
+      <h2><span class="n">03</span> Data model (Firestore)</h2>
+      <h3>Collection: <code>bookings</code></h3>
+      <div class="code">{
+  clientName, clientEmail, clientPhone, note,
+  sessionType,          // 'counselling' | 'priority' | 'mentoring-*'
+  amount,               // paise, set server-side (never trust client)
+  datetime,             // ISO, the booked slot
+  status,               // 'scheduled' | 'completed' | 'cancelled'
+  calBookingId,         // Cal.com booking reference
+  razorpayOrderId, razorpayPaymentId,
+  createdAt
+}</div>
+      <p><strong>Session types</strong> live in <code>src/data/sessions.ts</code> (server-side price source), not Firestore — simpler and tamper-proof. <code>completed</code> is derived when <code>datetime</code> passes (or set via Cal webhook).</p>
+      <table>
+        <tr><th>Session</th><th>Price</th><th>Len</th><th>Arm</th></tr>
+        <tr><td>Counselling Session</td><td>₹599</td><td>40m</td><td>Counselling (primary)</td></tr>
+        <tr><td>Priority Support</td><td>₹1,299</td><td>40m</td><td>Counselling</td></tr>
+        <tr><td>Student Guidance (intro / full)</td><td>₹499 / ₹999</td><td>40m</td><td>Mentoring (secondary)</td></tr>
+        <tr><td>Mock Interview (single / 3-pack)</td><td>₹799 / ₹1,890</td><td>40m</td><td>Mentoring</td></tr>
+      </table>
+    </section>
+
+    <section id="pages">
+      <h2><span class="n">04</span> Pages &amp; components</h2>
+      <ul>
+        <li><strong><code>index.astro</code></strong> — renders the 9 homepage sections (from spec §4) as Astro components. Mostly static; ships near-zero JS.</li>
+        <li><strong><code>BookingModal</code></strong> — the only interactive island. Opens from any "Book" CTA, runs the 3-step flow (slot → details → pay).</li>
+        <li><strong><code>admin/index.astro</code></strong> — SSR page guarded by an auth check; renders counters + bookings table.</li>
+        <li>Each homepage component carries its Sanctuary styling from <code>tokens.css</code> + the mockup CSS we already wrote.</li>
+      </ul>
+    </section>
+
+    <section id="api">
+      <h2><span class="n">05</span> API routes (server)</h2>
+      <table>
+        <tr><th>Route</th><th>Does</th></tr>
+        <tr><td><code>GET /api/availability</code></td><td>Fetch open slots for a session type from Cal.com; return clean list to the modal.</td></tr>
+        <tr><td><code>POST /api/create-order</code></td><td>Look up price server-side, create a Razorpay order, return <code>orderId</code> + public key.</td></tr>
+        <tr><td><code>POST /api/verify-payment</code></td><td>Verify Razorpay signature → create Cal.com booking → write Firestore <code>booking</code> → return success.</td></tr>
+        <tr><td><code>POST /api/cal-webhook</code></td><td>On reschedule/cancel/complete from Cal.com, update the matching Firestore booking.</td></tr>
+      </table>
+    </section>
+
+    <section id="flow">
+      <h2><span class="n">06</span> Booking + payment sequence</h2>
+      <p>Key principle: <strong>the calendar slot is only booked after payment is verified</strong> — no unpaid holds on her calendar.</p>
+      <div class="code">1. Client opens BookingModal → picks session type
+2. Modal GET /api/availability        → shows real open slots (Cal.com)
+3. Client picks slot + enters details
+4. Modal POST /api/create-order       → server prices it, returns Razorpay orderId
+5. Razorpay checkout opens (public key, client side)
+6. On success → POST /api/verify-payment { orderId, paymentId, signature, slot, details }
+7. Server: verify HMAC signature with SECRET
+        ├─ invalid → reject (faked success blocked)
+        └─ valid   → create Cal.com booking (slot → her Google Calendar)
+                   → write Firestore booking { status:'scheduled', calBookingId, ... }
+                   → (Cal.com emails client + her)
+8. Modal shows warm confirmation</div>
+      <div class="callout"><b>Mentoring CTAs</b> use the same flow with a mentoring session type — or, if you prefer, link those to her Topmate while the counselling flow is the custom one. Default: same custom flow for all.</div>
+    </section>
+
+    <section id="admin">
+      <h2><span class="n">07</span> Admin dashboard <span style="font-size:13px;color:var(--body);font-weight:500;font-family:var(--sans)">— <code>/admin</code></span></h2>
+      <ul>
+        <li>Login: Firebase Auth (email/password for Disha). SSR guard redirects non-admins.</li>
+        <li>Counters from Firestore: <strong>Total · Scheduled (upcoming) · Completed · Revenue (this month)</strong>.</li>
+        <li>Bookings table: client, session, date/time, status badge, amount. Sort by upcoming.</li>
+        <li>Optional later: manual "mark completed / cancelled", CSV export.</li>
+      </ul>
+    </section>
+
+    <section id="motion">
+      <h2><span class="n">08</span> Motion (GSAP)</h2>
+      <ul>
+        <li>Register GSAP + ScrollTrigger in a single client script.</li>
+        <li>Hero: one timeline — staggered fade-rise (kicker → headline → lead → CTAs → figure) + slow floating blob.</li>
+        <li>Sections: ScrollTrigger fade-up (replaces the IntersectionObserver in the mockup).</li>
+        <li>Respect <code>prefers-reduced-motion</code> — skip to final state.</li>
+      </ul>
+    </section>
+
+    <section id="security">
+      <h2><span class="n">09</span> Security &amp; env</h2>
+      <ul>
+        <li><strong>Secrets in Netlify env</strong>, never in repo: <code>RAZORPAY_KEY_SECRET</code>, <code>CALCOM_API_KEY</code>, Firebase service-account JSON, admin email allowlist.</li>
+        <li><strong>Public</strong> (browser-safe): <code>PUBLIC_RAZORPAY_KEY_ID</code>, public Firebase web config.</li>
+        <li>Razorpay signature verified <strong>server-side only</strong> before any booking is written.</li>
+        <li>Prices read server-side from <code>sessions.ts</code> — client can't change the amount.</li>
+        <li>Firestore rules: <code>bookings</code> writable only by the Admin SDK (server); admin reads gated by auth. No public client writes.</li>
+        <li>HTTPS via Netlify; security headers in <code>netlify.toml</code>.</li>
+      </ul>
+    </section>
+
+    <section id="milestones">
+      <h2><span class="n">10</span> Build milestones</h2>
+      <div class="ms"><div class="tag">M0</div><div><h3>Scaffold</h3><p>Astro + Netlify adapter + <code>tokens.css</code> + Base layout. First deploy to Netlify. <span class="pill">needs pkg approval</span></p></div></div>
+      <div class="ms"><div class="tag">M1</div><div><h3>Homepage</h3><p>All 9 sections as components with Disha's real content + Sanctuary design + GSAP. Fully static, live on Netlify. <em>(Shippable on its own — a real site even before booking works.)</em></p></div></div>
+      <div class="ms"><div class="tag">M2</div><div><h3>Firebase</h3><p>Create project, Firestore, Auth, security rules. Wire Admin SDK. Seed <code>sessions.ts</code>.</p></div></div>
+      <div class="ms"><div class="tag">M3</div><div><h3>Booking UI</h3><p>BookingModal + <code>/api/availability</code> from Cal.com. Slot + details, no payment yet.</p></div></div>
+      <div class="ms"><div class="tag">M4</div><div><h3>Payment</h3><p>Razorpay create-order + checkout + verify-payment → Cal.com booking + Firestore write. End-to-end paid booking.</p></div></div>
+      <div class="ms"><div class="tag">M5</div><div><h3>Admin</h3><p><code>/admin</code> auth + counters + bookings table + Cal webhook.</p></div></div>
+      <div class="ms"><div class="tag">M6</div><div><h3>Polish &amp; launch</h3><p>Error states, mobile QA, SEO meta + OG, sitemap, Google Business Profile. Swap in real photos/testimonials. Point <code>jaindisha.in</code> DNS. Go live.</p></div></div>
+    </section>
+
+    <section id="later">
+      <h2><span class="n">11</span> Where the "later" content plugs in</h2>
+      <ul>
+        <li><strong>Photos</strong> → <code>public/</code>, referenced in Hero + About (M1 placeholders → M6 swap).</li>
+        <li><strong>Session format/length</strong> → <code>sessions.ts</code> (confirm online-only, 40-min).</li>
+        <li><strong>FAQ + testimonial</strong> → Faq / Testimonial components (M1 placeholder → real with consent at M6).</li>
+        <li><strong>Contact email</strong> → Footer + booking notification target.</li>
+      </ul>
+      <div class="callout warn"><b>Carried flags (her sign-off):</b> trainee wording (no "Dr."), testimonial consent/ethics. Resolve before M6 launch.</div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

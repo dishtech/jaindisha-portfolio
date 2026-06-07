@@ -1,0 +1,85 @@
+---
+import { practitioner, social, footer } from '../data/site';
+---
+
+<footer>
+  <div class="wrap foot">
+    <div class="col-brand">
+      <span class="brand">Disha Jain</span>
+      <p class="role">{footer.tagline}</p>
+      <p class="trainee-note">{practitioner.trainee}</p>
+    </div>
+
+    <div>
+      <h4>Explore</h4>
+      {footer.explore.map((l) => <a href={l.href}>{l.label}</a>)}
+    </div>
+
+    <div>
+      <h4>Reach me</h4>
+      <a href={social.topmate} target="_blank" rel="noopener noreferrer">Topmate · @{practitioner.handle}</a>
+      <a href={social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      {
+        social.email
+          ? <a href={`mailto:${social.email}`}>{social.email}</a>
+          : <span class="muted">By appointment</span>
+      }
+      <span class="muted">{practitioner.location}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding: 64px 0 50px;
+  }
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+    padding-top: 40px;
+  }
+  .foot .brand {
+    font-size: 27px;
+  }
+  .role {
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .trainee-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--body);
+    opacity: 0.7;
+    max-width: 32ch;
+  }
+  .foot a {
+    display: block;
+    color: var(--body);
+    text-decoration: none;
+    font-size: 14px;
+    margin: 7px 0;
+    transition: color 0.2s;
+  }
+  .foot a:hover {
+    color: var(--clay);
+  }
+  .foot .muted {
+    display: block;
+    color: var(--body);
+    font-size: 14px;
+    margin: 7px 0;
+    opacity: 0.82;
+  }
+  .foot h4 {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sage-dk);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+</style>

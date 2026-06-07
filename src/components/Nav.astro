@@ -1,0 +1,54 @@
+---
+import { navLinks } from '../data/site';
+---
+
+<nav>
+  <div class="wrap row">
+    <span class="brand">Disha Jain</span>
+    <div class="navlinks">
+      {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+    </div>
+    <a href="#sessions" class="pill solid">Book a session <span class="ar">&rarr;</span></a>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    background: rgba(246, 239, 230, 0.74);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .row {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    height: 74px;
+  }
+  nav .brand {
+    margin-right: auto;
+  }
+  .navlinks {
+    display: flex;
+    gap: 30px;
+  }
+  .navlinks a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 14.5px;
+    font-weight: 500;
+    opacity: 0.78;
+    transition: opacity 0.2s;
+  }
+  .navlinks a:hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 880px) {
+    .navlinks {
+      display: none;
+    }
+  }
+</style>

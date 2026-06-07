@@ -1,0 +1,136 @@
+<style>
+  .intro { max-width: 760px; margin: 0 auto 8px; }
+  .dir { border-radius: 22px; overflow: hidden; margin: 0 0 30px; box-shadow: 0 10px 40px rgba(0,0,0,.10); border:1px solid rgba(0,0,0,.06); cursor:pointer; transition: transform .25s ease, box-shadow .25s ease; background:#fff; }
+  .dir:hover { transform: translateY(-4px); box-shadow: 0 18px 55px rgba(0,0,0,.16); }
+  .dir.selected { outline: 3px solid #6b8f71; outline-offset: 3px; }
+  .dir-head { display:flex; align-items:baseline; gap:14px; padding: 20px 26px 4px; }
+  .dir-head .tag { font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; opacity:.55; }
+  .dir-head h3 { margin:0; font-size: 26px; }
+  .dir-vibe { padding: 0 26px 16px; font-size:15px; opacity:.7; }
+
+  /* mini hero mockup */
+  .hero { position:relative; min-height: 300px; display:grid; grid-template-columns: 1.05fr .95fr; gap:0; }
+  .hero-copy { padding: 34px 34px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:2; }
+  .hero-nav { display:flex; gap:20px; align-items:center; font-size:12.5px; letter-spacing:.04em; margin-bottom: 30px; }
+  .hero-nav .brand { font-weight:700; letter-spacing:.02em; margin-right:auto; }
+  .hero-nav a { opacity:.75; }
+  .hero h1 { font-size: 38px; line-height:1.08; margin: 0 0 14px; font-weight:600; }
+  .hero p.sub { font-size:14.5px; line-height:1.6; margin:0 0 22px; max-width: 40ch; opacity:.82; }
+  .cta { display:inline-flex; align-items:center; gap:8px; padding: 12px 22px; border-radius: 100px; font-size:13.5px; font-weight:600; width:fit-content; }
+  .cta.ghost { background:transparent; }
+  .hero-img { position:relative; background-size:cover; background-position:center; }
+  .hero-img::after { content:""; position:absolute; inset:0; }
+  .blob { position:absolute; border-radius: 50% 50% 48% 52% / 55% 45% 55% 45%; }
+
+  .meta { display:flex; gap:0; border-top:1px solid rgba(0,0,0,.06); }
+  .swatches { display:flex; flex:1; }
+  .sw { flex:1; height: 58px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; font-size:9.5px; font-weight:600; letter-spacing:.02em; }
+  .notes { flex: 1.4; padding: 14px 22px; display:flex; flex-direction:column; gap:8px; justify-content:center; }
+  .notes .row { font-size:12.5px; line-height:1.45; }
+  .notes .k { font-weight:700; opacity:.55; text-transform:uppercase; letter-spacing:.08em; font-size:10.5px; margin-right:6px; }
+  @media (max-width: 760px){ .hero{ grid-template-columns:1fr; } .hero-img{ min-height:180px; } .meta{ flex-direction:column; } }
+</style>
+
+<div class="intro">
+  <h2>Three warm &amp; nurturing directions</h2>
+  <p class="subtitle">Same soul, three personalities. Each shows a homepage hero, its color palette, type, and the GSAP motion feel. Click the one that resonates — or tell me what to mix.</p>
+</div>
+
+<!-- A: Sanctuary -->
+<div class="dir card" data-choice="a" onclick="toggleSelect(this)">
+  <div class="dir-head"><span class="tag">Direction A</span><h3>Sanctuary</h3></div>
+  <p class="dir-vibe">Grounded and safe. Terracotta + sage, organic shapes, a serif that feels like a warm voice. Feels like being held.</p>
+  <div class="hero" style="background:#f6efe6;">
+    <div class="hero-copy" style="color:#3d3328;">
+      <div class="hero-nav">
+        <span class="brand" style="color:#a85d42;">dr. ananya</span>
+        <a>Work with me</a><a>About</a><a>Sessions</a>
+      </div>
+      <h1 style="font-family:Georgia,'Times New Roman',serif; color:#4a3b2e;">A gentle space to feel whole again.</h1>
+      <p class="sub">Compassionate, one-on-one therapy for anxiety, burnout, and finding your footing — at your own pace.</p>
+      <span class="cta" style="background:#a85d42; color:#fdf8f1;">Book a session &nbsp;&rarr;</span>
+    </div>
+    <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=700&q=80'); background-color:#cbb89a;">
+      <div class="blob" style="width:120px;height:120px; background:#6b8f71; opacity:.55; top:-30px; left:-40px;"></div>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="swatches">
+      <div class="sw" style="background:#a85d42;color:#fff;">#A85D42</div>
+      <div class="sw" style="background:#6b8f71;color:#fff;">#6B8F71</div>
+      <div class="sw" style="background:#cbb89a;color:#4a3b2e;">#CBB89A</div>
+      <div class="sw" style="background:#f6efe6;color:#4a3b2e;">#F6EFE6</div>
+      <div class="sw" style="background:#4a3b2e;color:#fff;">#4A3B2E</div>
+    </div>
+    <div class="notes">
+      <div class="row"><span class="k">Type</span> Warm serif headings (Fraunces) · humanist sans body (Inter)</div>
+      <div class="row"><span class="k">Motion</span> Soft blob drift, gentle fade-rise on scroll, image parallax</div>
+    </div>
+  </div>
+</div>
+
+<!-- B: Soft Light -->
+<div class="dir card" data-choice="b" onclick="toggleSelect(this)">
+  <div class="dir-head"><span class="tag">Direction B</span><h3>Soft Light</h3></div>
+  <p class="dir-vibe">Airy and tender. Blush + cream with lots of breathing room, a delicate serif, editorial whitespace. Feels like a calm exhale.</p>
+  <div class="hero" style="background:#fbf4f1;">
+    <div class="hero-copy" style="color:#5a4a4a;">
+      <div class="hero-nav">
+        <span class="brand" style="color:#b87b7b;">ananya rao</span>
+        <a>About</a><a>Sessions</a><a>Contact</a>
+      </div>
+      <h1 style="font-family:Georgia,serif; font-style:italic; font-weight:500; color:#6e5757;">Breathe. You're<br>in the right place.</h1>
+      <p class="sub">Quiet, considered therapy — space to slow down, untangle, and come home to yourself.</p>
+      <span class="cta" style="background:#b87b7b; color:#fff;">Begin gently &nbsp;&rarr;</span>
+    </div>
+    <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=700&q=80'); background-color:#e8d3cf;">
+      <div class="blob" style="width:90px;height:90px; background:#f3dcd6; opacity:.7; bottom:24px; right:24px;"></div>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="swatches">
+      <div class="sw" style="background:#b87b7b;color:#fff;">#B87B7B</div>
+      <div class="sw" style="background:#e8d3cf;color:#6e5757;">#E8D3CF</div>
+      <div class="sw" style="background:#f3dcd6;color:#6e5757;">#F3DCD6</div>
+      <div class="sw" style="background:#fbf4f1;color:#6e5757;">#FBF4F1</div>
+      <div class="sw" style="background:#6e5757;color:#fff;">#6E5757</div>
+    </div>
+    <div class="notes">
+      <div class="row"><span class="k">Type</span> Elegant italic serif display (Cormorant) · clean sans body (Mukta)</div>
+      <div class="row"><span class="k">Motion</span> Slow content reveals, hairline draw-in lines, hover-soft buttons</div>
+    </div>
+  </div>
+</div>
+
+<!-- C: Golden Hour -->
+<div class="dir card" data-choice="c" onclick="toggleSelect(this)">
+  <div class="dir-head"><span class="tag">Direction C</span><h3>Golden Hour</h3></div>
+  <p class="dir-vibe">Glowing and intimate. Honey + clay with richer warmth and bolder, confident type. Feels like late-afternoon sun through a window.</p>
+  <div class="hero" style="background:#f3e7d3;">
+    <div class="hero-copy" style="color:#4a3522;">
+      <div class="hero-nav">
+        <span class="brand" style="color:#c08a3e;">ANANYA · therapy</span>
+        <a>Work</a><a>About</a><a>Book</a>
+      </div>
+      <h1 style="font-family:Georgia,serif; font-weight:700; color:#5c3d1e;">Healing, in your<br>own warm light.</h1>
+      <p class="sub">Therapy that meets you where you are — honest, human, and unhurried.</p>
+      <span class="cta" style="background:#c08a3e; color:#fff;">Reserve your hour &nbsp;&rarr;</span>
+    </div>
+    <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=700&q=80'); background-color:#d8a86a;">
+      <div class="blob" style="width:130px;height:130px; background:#e6b873; opacity:.5; top:-40px; right:-30px;"></div>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="swatches">
+      <div class="sw" style="background:#c08a3e;color:#fff;">#C08A3E</div>
+      <div class="sw" style="background:#b25a3c;color:#fff;">#B25A3C</div>
+      <div class="sw" style="background:#d8a86a;color:#4a3522;">#D8A86A</div>
+      <div class="sw" style="background:#f3e7d3;color:#5c3d1e;">#F3E7D3</div>
+      <div class="sw" style="background:#5c3d1e;color:#fff;">#5C3D1E</div>
+    </div>
+    <div class="notes">
+      <div class="row"><span class="k">Type</span> Bold modern serif (Fraunces 600+) · grotesque sans body (Hanken)</div>
+      <div class="row"><span class="k">Motion</span> Warm gradient wash drift, bold headline mask-reveal, sticky-scroll sections</div>
+    </div>
+  </div>
+</div>

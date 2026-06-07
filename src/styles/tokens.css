@@ -1,0 +1,20 @@
+/* Sanctuary design tokens — single source of truth for palette + type.
+   Ported verbatim from plans/home-sanctuary-designed.html. */
+:root {
+  --clay: #a85d42;
+  --clay-dk: #8e4a31;
+  --sage: #6b8f71;
+  --sage-dk: #56755b;
+  --sand: #cbb89a;
+  --cream: #f6efe6;
+  --cream2: #fdf8f1;
+  --dark: #3a2e23;
+  --ink: #43352a;
+  --body: #6b5a4a;
+  --line: rgba(168, 93, 66, 0.16);
+
+  --display: 'Fraunces', Georgia, serif;
+  --sans: 'Hanken Grotesk', system-ui, sans-serif;
+
+  --maxw: 1180px;
+}

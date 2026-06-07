@@ -1,0 +1,131 @@
+---
+import { sessions, social } from '../data/site';
+---
+
+<section id="sessions">
+  <div class="wrap">
+    <div class="center rv">
+      <p class="kicker stamp">Work with me · secure payment</p>
+      <h2 class="h-sec">Choose what feels right.</h2>
+      <p class="lead center-lead">Pick a session, choose a time, and pay securely. A warm confirmation lands in your inbox.</p>
+    </div>
+    <div class="sessions">
+      {
+        sessions.map((s) => (
+          <div class:list={['scard', 'rv', { feat: s.featured }]}>
+            {s.badge && <span class="badge">{s.badge}</span>}
+            <h3 class="serif">{s.name}</h3>
+            <p class="sdesc">{s.desc}</p>
+            <div class="price">{s.price}</div>
+            <div class="per">{s.duration}</div>
+            {/* M3: replace this interim Topmate link with the in-page BookingModal (Cal.com + Razorpay) */}
+            <a class="pill solid" href={social.topmate} target="_blank" rel="noopener noreferrer">
+              Book &amp; pay <span class="ar">&rarr;</span>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .center-lead {
+    margin: 14px auto 0;
+  }
+  .sessions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    margin: 52px auto 0;
+    max-width: 740px;
+    align-items: stretch;
+  }
+  .scard {
+    display: flex;
+    flex-direction: column;
+    background: var(--cream2);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 32px 28px;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s;
+  }
+  .scard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 36px 70px -34px rgba(58, 46, 35, 0.45);
+  }
+  .scard.feat {
+    background: linear-gradient(165deg, #4a3a2c, var(--dark));
+    border-color: transparent;
+    color: #e9ddcd;
+    transform: translateY(-12px);
+    box-shadow: 0 40px 80px -36px rgba(58, 46, 35, 0.7);
+  }
+  .scard.feat:hover {
+    transform: translateY(-18px);
+  }
+  .badge {
+    align-self: flex-start;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dark);
+    background: var(--sand);
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+  .scard h3 {
+    font-size: 27px;
+  }
+  .scard.feat h3 {
+    color: #fff;
+  }
+  .sdesc {
+    font-size: 14px;
+    margin: 10px 0 22px;
+    min-height: 44px;
+  }
+  .scard.feat .sdesc {
+    color: #d8c6ad;
+  }
+  .price {
+    font-family: var(--display);
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--clay);
+    line-height: 1;
+  }
+  .scard.feat .price {
+    color: var(--sand);
+  }
+  .per {
+    font-size: 12.5px;
+    color: #a08e76;
+    margin: 6px 0 24px;
+  }
+  .scard.feat .per {
+    color: #d8c6ad;
+  }
+  .scard .pill {
+    margin-top: auto;
+    justify-content: center;
+  }
+  .scard.feat .pill.solid {
+    background: var(--sand);
+    color: var(--dark);
+    box-shadow: none;
+  }
+
+  @media (max-width: 880px) {
+    .sessions {
+      grid-template-columns: 1fr;
+      max-width: 420px;
+    }
+    .scard.feat,
+    .scard.feat:hover {
+      transform: none;
+    }
+  }
+</style>

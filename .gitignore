@@ -1,0 +1,20 @@
+# build output
+dist/
+.netlify/
+
+# astro generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# secrets / env
+.env
+.env.*
+!.env.example
+
+# os / editor
+.DS_Store
+*.log
+npm-debug.log*
+.gstack/

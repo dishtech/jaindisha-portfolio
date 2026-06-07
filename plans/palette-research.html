@@ -1,0 +1,196 @@
+<style>
+  .pintro{ max-width:840px; margin:0 auto 12px; }
+  .pintro .note{ background:#F2EFE9; border-left:3px solid #8FA68E; padding:12px 16px; border-radius:8px; font-size:13px; color:#4a4a44; line-height:1.55; margin-top:10px; }
+  .pv{ border-radius:16px; overflow:hidden; margin:0 0 22px; box-shadow:0 8px 30px rgba(40,46,52,.1); border:1px solid rgba(0,0,0,.07); cursor:pointer; transition:transform .2s, box-shadow .2s; background:#fff; }
+  .pv:hover{ transform:translateY(-3px); box-shadow:0 16px 44px rgba(40,46,52,.16); }
+  .pv.selected{ outline:3px solid #4F6150; outline-offset:3px; }
+  .pv-head{ display:flex; align-items:baseline; gap:12px; padding:16px 22px 2px; }
+  .pv-head .tag{ font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:800; opacity:.5; }
+  .pv-head h3{ margin:0; font-size:21px; color:#2b332e; }
+  .pv-mood{ padding:0 22px 12px; font-size:12.5px; color:#71726b; }
+
+  .mh{ display:grid; grid-template-columns:1.05fr .9fr; min-height:190px; }
+  .mh-copy{ padding:22px 24px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:2; }
+  .mh-nav{ display:flex; gap:14px; align-items:center; font-size:11px; margin-bottom:16px; }
+  .mh-nav .brand{ font-weight:700; margin-right:auto; }
+  .mh h1{ font-family:Georgia,serif; font-size:26px; line-height:1.1; margin:0 0 9px; font-weight:600; }
+  .mh p{ font-size:12px; line-height:1.5; margin:0 0 14px; max-width:36ch; }
+  .mh .cta{ display:inline-flex; align-items:center; gap:6px; padding:9px 17px; border-radius:100px; font-size:11.5px; font-weight:600; width:fit-content; }
+  .mh-img{ background-size:cover; background-position:center; position:relative; }
+  .kick{ font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; margin-bottom:7px; }
+  .blob{ position:absolute; border-radius:50% 50% 48% 52% / 55% 45% 55% 45%; }
+
+  .strip{ display:flex; }
+  .sw{ flex:1; height:40px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:4px; font-size:8.5px; font-weight:700; }
+  .why{ font-size:11.5px; color:#71726b; padding:10px 22px; border-top:1px solid rgba(0,0,0,.06); line-height:1.5; }
+  .why b{ color:#4F6150; }
+  @media(max-width:760px){ .mh{ grid-template-columns:1fr; } .mh-img{ min-height:120px; } }
+</style>
+
+<div class="pintro">
+  <h2 style="color:#2b332e;">Six research-backed palettes for a therapy site</h2>
+  <p class="subtitle">All muted (the #1 rule for therapy design) and temperature-balanced so colors actually mix. Same hero and words across all — judge only the colour. Click your favourite, or two to compare.</p>
+  <div class="note"><b>Why Tide &amp; Sand felt off:</b> a bold cool-cyan teal against warm yellow cream = opposite temperatures fighting. The fixes below either mute the teal, or pair blue/green with a temperature-matched neutral.</div>
+</div>
+
+<!-- 1 SAGE & STONE -->
+<div class="pv card" data-choice="sagestone" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">1 · the safe gold-standard</span><h3>Sage &amp; Stone</h3></div>
+  <p class="pv-mood">Muted green + warm stone neutral. The most-recommended therapy combo: renewal, balance, grounded calm.</p>
+  <div class="mh" style="background:#F6F3EC;">
+    <div class="mh-copy" style="color:#4a544b;">
+      <div class="mh-nav"><span class="brand" style="color:#4F6150;">dr. ananya</span><a style="opacity:.65">About</a><a style="opacity:.65">Sessions</a></div>
+      <p class="kick" style="color:#7d9079;">Therapy &amp; counselling</p>
+      <h1 style="color:#2f3a33;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#4F6150;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=560&q=80');background-color:#8FA68E;">
+      <div class="blob" style="width:80px;height:80px;background:#8FA68E;opacity:.6;top:-18px;left:-22px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#4F6150;color:#fff;">#4F6150</div>
+    <div class="sw" style="background:#8FA68E;color:#2f3a33;">#8FA68E</div>
+    <div class="sw" style="background:#C7D0BE;color:#2f3a33;">#C7D0BE</div>
+    <div class="sw" style="background:#EDE8DE;color:#2f3a33;">#EDE8DE</div>
+    <div class="sw" style="background:#F6F3EC;color:#2f3a33;">#F6F3EC</div>
+    <div class="sw" style="background:#2f3a33;color:#fff;">TEXT</div>
+  </div>
+  <div class="why"><b>Why it works:</b> green = healing/renewal; the stone neutral shares green's warmth so they blend. Calm, credible, never cold. Safest choice.</div>
+</div>
+
+<!-- 2 EUCALYPTUS & BLUSH -->
+<div class="pv card" data-choice="eucalyptusblush" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">2 · warm + personal</span><h3>Eucalyptus &amp; Blush</h3></div>
+  <p class="pv-mood">Soft green-grey with a muted blush accent. Tender, feminine, deeply human — popular for women practitioners.</p>
+  <div class="mh" style="background:#F5EFE8;">
+    <div class="mh-copy" style="color:#544c48;">
+      <div class="mh-nav"><span class="brand" style="color:#4E6155;">dr. ananya</span><a style="opacity:.65">About</a><a style="opacity:.65">Sessions</a></div>
+      <p class="kick" style="color:#c08f82;">Therapy &amp; counselling</p>
+      <h1 style="color:#3a443e;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#4E6155;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=560&q=80');background-color:#9DB5A6;">
+      <div class="blob" style="width:80px;height:80px;background:#D9BDB3;opacity:.75;bottom:14px;right:14px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#4E6155;color:#fff;">#4E6155</div>
+    <div class="sw" style="background:#9DB5A6;color:#3a443e;">#9DB5A6</div>
+    <div class="sw" style="background:#D9BDB3;color:#3a443e;">#D9BDB3</div>
+    <div class="sw" style="background:#EFE2DA;color:#544c48;">#EFE2DA</div>
+    <div class="sw" style="background:#F5EFE8;color:#544c48;">#F5EFE8</div>
+    <div class="sw" style="background:#3a443e;color:#fff;">TEXT</div>
+  </div>
+  <div class="why"><b>Why it works:</b> blush + eucalyptus are both muted and warm-leaning, so they mix effortlessly. Adds the warmth your original instinct wanted, without clashing.</div>
+</div>
+
+<!-- 3 MUTED TEAL & GREIGE -->
+<div class="pv card" data-choice="mutedteal" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">3 · your teal, fixed</span><h3>Muted Teal &amp; Greige</h3></div>
+  <p class="pv-mood">The teal you liked — desaturated and softened — on a temperature-neutral greige. Keeps the identity, drops the clash.</p>
+  <div class="mh" style="background:#F4F1EA;">
+    <div class="mh-copy" style="color:#4c5557;">
+      <div class="mh-nav"><span class="brand" style="color:#3C6068;">dr. ananya</span><a style="opacity:.65">About</a><a style="opacity:.65">Sessions</a></div>
+      <p class="kick" style="color:#6f9aa1;">Therapy &amp; counselling</p>
+      <h1 style="color:#293a3d;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#3C6068;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=560&q=80');background-color:#6F9AA1;">
+      <div class="blob" style="width:80px;height:80px;background:#9DBDC1;opacity:.7;top:-18px;left:-22px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#3C6068;color:#fff;">#3C6068</div>
+    <div class="sw" style="background:#6F9AA1;color:#293a3d;">#6F9AA1</div>
+    <div class="sw" style="background:#BcD3D4;color:#293a3d;">#BCD3D4</div>
+    <div class="sw" style="background:#E7E2D8;color:#4c5557;">#E7E2D8</div>
+    <div class="sw" style="background:#F4F1EA;color:#4c5557;">#F4F1EA</div>
+    <div class="sw" style="background:#293a3d;color:#fff;">TEXT</div>
+  </div>
+  <div class="why"><b>Why it works:</b> dropping the teal's saturation pulls it toward grey-green, which sits happily next to a warm-grey neutral. Same brand feel, no fighting.</div>
+</div>
+
+<!-- 4 SOFT BLUE & SAND -->
+<div class="pv card" data-choice="bluesand" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">4 · classic trust</span><h3>Soft Blue &amp; Sand</h3></div>
+  <p class="pv-mood">Dusty slate-blue with warm sand. Blue is the most-trusted therapy colour — calm, safe, reliable.</p>
+  <div class="mh" style="background:#F6F2E9;">
+    <div class="mh-copy" style="color:#4d555c;">
+      <div class="mh-nav"><span class="brand" style="color:#3E586B;">dr. ananya</span><a style="opacity:.65">About</a><a style="opacity:.65">Sessions</a></div>
+      <p class="kick" style="color:#7e9bb2;">Therapy &amp; counselling</p>
+      <h1 style="color:#2c3a44;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#3E586B;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=560&q=80');background-color:#8AA6BC;">
+      <div class="blob" style="width:80px;height:80px;background:#8AA6BC;opacity:.6;top:-18px;left:-22px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#3E586B;color:#fff;">#3E586B</div>
+    <div class="sw" style="background:#8AA6BC;color:#2c3a44;">#8AA6BC</div>
+    <div class="sw" style="background:#C4D2DD;color:#2c3a44;">#C4D2DD</div>
+    <div class="sw" style="background:#EAE2D2;color:#4d555c;">#EAE2D2</div>
+    <div class="sw" style="background:#F6F2E9;color:#4d555c;">#F6F2E9</div>
+    <div class="sw" style="background:#2c3a44;color:#fff;">TEXT</div>
+  </div>
+  <div class="why"><b>Why it works:</b> softened blue keeps the trust/safety signal; warm sand neutral takes the chill off. Professional, calm, widely used for anxiety/trauma practices.</div>
+</div>
+
+<!-- 5 OCEAN OASIS -->
+<div class="pv card" data-choice="oceanoasis" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">5 · distinctive, balanced</span><h3>Ocean Oasis</h3></div>
+  <p class="pv-mood">Marine teal-green with a soft terracotta accent. The terracotta is the warm-cool bridge that makes teal feel human.</p>
+  <div class="mh" style="background:#EFE7D8;">
+    <div class="mh-copy" style="color:#4e544e;">
+      <div class="mh-nav"><span class="brand" style="color:#3D625B;">dr. ananya</span><a style="opacity:.65">About</a><a style="opacity:.65">Sessions</a></div>
+      <p class="kick" style="color:#c8836a;">Therapy &amp; counselling</p>
+      <h1 style="color:#33403c;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#3D625B;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=560&q=80');background-color:#5C8A82;">
+      <div class="blob" style="width:80px;height:80px;background:#C8836A;opacity:.65;bottom:14px;right:14px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#2F4F4A;color:#fff;">#2F4F4A</div>
+    <div class="sw" style="background:#5C8A82;color:#fff;">#5C8A82</div>
+    <div class="sw" style="background:#C8836A;color:#fff;">#C8836A</div>
+    <div class="sw" style="background:#E3D3BE;color:#4e544e;">#E3D3BE</div>
+    <div class="sw" style="background:#EFE7D8;color:#4e544e;">#EFE7D8</div>
+    <div class="sw" style="background:#33403c;color:#fff;">TEXT</div>
+  </div>
+  <div class="why"><b>Why it works:</b> a designer favourite ("Ocean Oasis"). Terracotta is teal's complement, so the warmth is *intentional contrast*, not a clash. Most unique while staying calm.</div>
+</div>
+
+<!-- 6 LAVENDER & TEAL -->
+<div class="pv card" data-choice="lavenderteal" onclick="toggleSelect(this)">
+  <div class="pv-head"><span class="tag">6 · unique, trauma-informed</span><h3>Lavender &amp; Teal</h3></div>
+  <p class="pv-mood">Muted teal with soft lavender. Research pairs these for mental clarity + calm; standout without being loud.</p>
+  <div class="mh" style="background:#F3F0EA;">
+    <div class="mh-copy" style="color:#504c57;">
+      <div class="mh-nav"><span class="brand" style="color:#4A4458;">dr. ananya</span><a style="opacity:.65">About</a><a style="opacity:.65">Sessions</a></div>
+      <p class="kick" style="color:#5E8A8D;">Therapy &amp; counselling</p>
+      <h1 style="color:#352f40;">A gentle space to feel whole again.</h1>
+      <p>Compassionate, one-on-one therapy at your own pace, in a space that feels safe.</p>
+      <span class="cta" style="background:#5E8A8D;color:#fff;">Book a session &rarr;</span>
+    </div>
+    <div class="mh-img" style="background-image:url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=560&q=80');background-color:#B3A6C7;">
+      <div class="blob" style="width:80px;height:80px;background:#5E8A8D;opacity:.6;top:-18px;left:-22px;"></div>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="sw" style="background:#4A4458;color:#fff;">#4A4458</div>
+    <div class="sw" style="background:#5E8A8D;color:#fff;">#5E8A8D</div>
+    <div class="sw" style="background:#B3A6C7;color:#352f40;">#B3A6C7</div>
+    <div class="sw" style="background:#D8CFE0;color:#352f40;">#D8CFE0</div>
+    <div class="sw" style="background:#F3F0EA;color:#504c57;">#F3F0EA</div>
+    <div class="sw" style="background:#352f40;color:#fff;">TEXT</div>
+  </div>
+  <div class="why"><b>Why it works:</b> teal promotes open dialogue, lavender adds insight/calm — recommended for trauma work. Both muted and adjacent on the wheel, so they harmonize. Most memorable.</div>
+</div>

@@ -1,0 +1,107 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = 'Disha Jain — Counselling & Psychology Mentoring',
+  description =
+    'Warm, one-to-one online counselling with Disha Jain — a PsyD trainee and counsellor with 7+ years of experience. A gentle space for stress, self-doubt, and the in-between moments. Plus mentoring for aspiring psychologists.',
+  image = '/og-default.png',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Disha Jain" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#f6efe6" />
+
+    <!-- Fonts: Fraunces (display) + Hanken Grotesk (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Mark JS-on before first paint so reveal targets start hidden,
+         and stay fully visible when JS is disabled or fails. -->
+    <script is:inline>
+      document.documentElement.classList.add('js-anim');
+    </script>
+  </head>
+
+  <body>
+    <div class="shell">
+      <slot />
+    </div>
+
+    <!-- Orchestrated, restrained motion — GSAP + ScrollTrigger.
+         Replaces the mockup's IntersectionObserver + CSS @keyframes. -->
+    <script>
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const root = document.documentElement;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce) {
+        // Skip to final state — reveal everything, no animation.
+        root.classList.remove('js-anim');
+      } else {
+        // Hero: staggered fade-rise (kicker → headline → lead → CTAs → figure).
+        gsap.to('.stg > *:not(.b1)', {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          stagger: 0.12,
+          delay: 0.1,
+        });
+
+        // Sections: scroll-reveal fade-up, once per element.
+        gsap.utils.toArray<HTMLElement>('.rv').forEach((el) => {
+          gsap.to(el, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 84%', once: true },
+          });
+        });
+
+        // Slow floating hero blob.
+        gsap.to('.b1', { y: -16, duration: 4.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
+      }
+    </script>
+  </body>
+</html>

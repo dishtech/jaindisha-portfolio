@@ -1,0 +1,173 @@
+<style>
+  :root{
+    --deep:#075F7B; --dark:#00303F; --aqua:#8BCBD9; --light:#E8F5F5; --pale:#D1ECF2; --white:#fff; --ink:#0d2b34;
+  }
+  .wrap{ max-width:980px; margin:0 auto; font-family:'Inter',system-ui,sans-serif; color:var(--ink); }
+  .part{ background:var(--white); border:1px solid rgba(7,95,123,.16); border-radius:18px; padding:30px 30px 34px; margin:0 0 30px; box-shadow:0 8px 30px rgba(7,95,123,.08); }
+  .part > .ptag{ display:inline-block; font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; color:var(--deep); background:var(--light); padding:6px 12px; border-radius:100px; margin-bottom:12px; }
+  .part h3{ margin:0 0 6px; font-size:24px; color:var(--dark); }
+  .part .psub{ margin:0 0 22px; font-size:14px; line-height:1.6; color:#4a6670; }
+
+  /* ---------- C: ARCHITECTURE ---------- */
+  .arch{ display:flex; flex-direction:column; gap:0; align-items:center; }
+  .layer{ width:100%; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .node{ flex:1; min-width:150px; max-width:230px; border-radius:14px; padding:16px 16px; text-align:center; border:2px solid var(--deep); background:var(--white); }
+  .node .nt{ font-weight:800; font-size:14px; color:var(--dark); }
+  .node .nd{ font-size:11.5px; line-height:1.45; color:#5a7680; margin-top:5px; }
+  .node.client{ background:var(--light); }
+  .node.server{ background:var(--deep); border-color:var(--deep); }
+  .node.server .nt{ color:#fff; } .node.server .nd{ color:var(--pale); }
+  .node.data{ background:var(--aqua); border-color:var(--deep); }
+  .node.ext{ background:var(--white); border-style:dashed; }
+  .node.ext .nt{ color:var(--deep); }
+  .arrow{ color:var(--deep); font-size:22px; padding:8px 0; font-weight:700; }
+  .secnote{ font-size:11.5px; color:var(--deep); background:var(--light); border-radius:10px; padding:10px 14px; margin-top:16px; line-height:1.5; }
+  .secnote b{ color:var(--dark); }
+
+  /* ---------- A: ADMIN DASHBOARD ---------- */
+  .admin{ border:1px solid rgba(7,95,123,.18); border-radius:14px; overflow:hidden; }
+  .atop{ background:var(--dark); color:#fff; padding:14px 20px; display:flex; align-items:center; gap:12px; font-size:13px; }
+  .atop .alogo{ font-weight:800; color:var(--aqua); }
+  .atop .aright{ margin-left:auto; opacity:.8; font-size:12px; }
+  .abody{ background:var(--light); padding:22px; }
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+  .stat{ background:#fff; border-radius:12px; padding:16px 16px; border:1px solid rgba(7,95,123,.12); }
+  .stat .sl{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#6a8590; font-weight:700; }
+  .stat .sv{ font-size:30px; font-weight:800; color:var(--dark); margin-top:6px; line-height:1; }
+  .stat .sd{ font-size:11px; color:var(--deep); margin-top:6px; font-weight:600; }
+  .stat.accent{ background:var(--deep); } .stat.accent .sl{ color:var(--pale);} .stat.accent .sv,.stat.accent .sd{ color:#fff; }
+  .tbl{ background:#fff; border-radius:12px; overflow:hidden; border:1px solid rgba(7,95,123,.12); }
+  .tbl .th,.tbl .tr{ display:grid; grid-template-columns:1.4fr 1.3fr 1.3fr .9fr .8fr; padding:12px 16px; font-size:12.5px; align-items:center; }
+  .tbl .th{ background:var(--pale); font-weight:800; color:var(--dark); font-size:11px; text-transform:uppercase; letter-spacing:.05em; }
+  .tbl .tr{ border-top:1px solid rgba(7,95,123,.08); }
+  .badge{ font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:100px; width:fit-content; }
+  .b-sched{ background:var(--pale); color:var(--deep); }
+  .b-done{ background:#dff0e4; color:#2e7d4f; }
+  .b-cancel{ background:#fbe1e1; color:#b14a4a; }
+
+  /* ---------- B: BOOKING FLOW ---------- */
+  .flow{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; align-items:stretch; }
+  .fstep{ background:var(--light); border:1px solid rgba(7,95,123,.15); border-radius:12px; padding:12px; display:flex; flex-direction:column; }
+  .fstep .fnum{ font-size:10px; font-weight:800; color:var(--deep); letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
+  .fstep .ftitle{ font-size:12.5px; font-weight:800; color:var(--dark); margin-bottom:8px; }
+  .mini{ background:#fff; border-radius:8px; border:1px solid rgba(7,95,123,.12); padding:9px; font-size:10px; color:#5a7680; flex:1; }
+  .mini .pill{ background:var(--light); border:1px solid rgba(7,95,123,.18); border-radius:6px; padding:5px 7px; margin-bottom:5px; }
+  .mini .pill.sel{ background:var(--deep); color:#fff; border-color:var(--deep); }
+  .mini .slot{ display:inline-block; border:1px solid rgba(7,95,123,.25); border-radius:5px; padding:3px 6px; margin:2px 2px 0 0; font-size:9px; }
+  .mini .slot.sel{ background:var(--deep); color:#fff; }
+  .mini .field{ border:1px solid rgba(7,95,123,.2); border-radius:5px; padding:5px 6px; margin-bottom:5px; color:#90a5ad; }
+  .rzp{ background:var(--dark); color:#fff; text-align:center; }
+  .rzp .rlogo{ font-weight:800; color:#3b95e8; font-size:11px; margin-bottom:6px; }
+  .rzp .ramt{ font-size:18px; font-weight:800; margin:4px 0; }
+  .rzp .rbtn{ background:#3b95e8; color:#fff; border-radius:6px; padding:6px; font-weight:700; font-size:10px; margin-top:6px; }
+  .done{ background:var(--deep); color:#fff; align-items:center; justify-content:center; text-align:center; }
+  .done .check{ width:34px; height:34px; border-radius:50%; background:#fff; color:var(--deep); font-size:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-weight:800; }
+  .farrow{ display:flex; align-items:center; justify-content:center; color:var(--deep); font-weight:800; }
+  @media(max-width:760px){ .stats{grid-template-columns:1fr 1fr;} .flow{grid-template-columns:1fr;} .layer{flex-direction:column; align-items:center;} }
+</style>
+
+<div class="wrap">
+  <h2 style="text-align:center;color:var(--dark);">The system, in The Navigating Space palette</h2>
+  <p class="subtitle" style="text-align:center;">Recolored to the teal/aqua theme you pulled. Three parts: how it's wired, the admin view, and the booking-to-payment journey.</p>
+
+  <!-- C: ARCHITECTURE -->
+  <div class="part">
+    <span class="ptag">C · Architecture</span>
+    <h3>How Astro, Firebase &amp; Razorpay fit together</h3>
+    <p class="psub">Astro renders the pages and exposes a few server endpoints. The secret-key work (verifying payment, writing bookings) never happens in the browser.</p>
+    <div class="arch">
+      <div class="layer">
+        <div class="node client"><div class="nt">Visitor's browser</div><div class="nd">Astro pages (near-zero JS) + GSAP animations</div></div>
+        <div class="node client"><div class="nt">/admin (her login)</div><div class="nd">Protected page, server-rendered counts</div></div>
+      </div>
+      <div class="arrow">&#8595;</div>
+      <div class="layer">
+        <div class="node server"><div class="nt">Astro server (SSR + API routes)</div><div class="nd">/api/create-order · /api/verify-payment · /api/bookings &nbsp;— holds the secret key</div></div>
+      </div>
+      <div class="arrow">&#8595;</div>
+      <div class="layer">
+        <div class="node data"><div class="nt">Firebase Firestore</div><div class="nd">bookings { client, session, datetime, status }</div></div>
+        <div class="node data"><div class="nt">Firebase Auth</div><div class="nd">Admin login for the dashboard</div></div>
+        <div class="node ext"><div class="nt">Razorpay</div><div class="nd">Order + checkout + signed callback</div></div>
+      </div>
+    </div>
+    <div class="secnote"><b>Safety:</b> the browser only ever holds the public Razorpay key. The secret key, signature verification, and the "mark booking paid" write all live on the Astro server. A faked "payment success" from the client is rejected because the signature won't match.</div>
+  </div>
+
+  <!-- A: ADMIN -->
+  <div class="part">
+    <span class="ptag">A · Admin dashboard</span>
+    <h3>What she sees at /admin</h3>
+    <p class="psub">One private page, behind her login. Live counts pulled from Firestore, plus the bookings list she can manage.</p>
+    <div class="admin">
+      <div class="atop"><span class="alogo">the navigating space</span> · Admin <span class="aright">Logged in as Dr. Ananya &nbsp;·&nbsp; Sign out</span></div>
+      <div class="abody">
+        <div class="stats">
+          <div class="stat"><div class="sl">Total sessions</div><div class="sv">128</div><div class="sd">all time</div></div>
+          <div class="stat accent"><div class="sl">Scheduled</div><div class="sv">14</div><div class="sd">upcoming</div></div>
+          <div class="stat"><div class="sl">Completed</div><div class="sv">109</div><div class="sd">+6 this week</div></div>
+          <div class="stat"><div class="sl">Revenue · June</div><div class="sv">₹46k</div><div class="sd">28 paid</div></div>
+        </div>
+        <div class="tbl">
+          <div class="th"><div>Client</div><div>Session</div><div>Date &amp; time</div><div>Status</div><div>Amount</div></div>
+          <div class="tr"><div>Priya M.</div><div>Ongoing Therapy</div><div>2 Jun · 5:00 PM</div><div><span class="badge b-sched">Scheduled</span></div><div>₹1,600</div></div>
+          <div class="tr"><div>Rahul S.</div><div>First Session</div><div>3 Jun · 11:00 AM</div><div><span class="badge b-sched">Scheduled</span></div><div>₹1,800</div></div>
+          <div class="tr"><div>A. &amp; K.</div><div>Couples</div><div>31 May · 6:30 PM</div><div><span class="badge b-done">Completed</span></div><div>₹2,800</div></div>
+          <div class="tr"><div>Neha D.</div><div>First Session</div><div>30 May · 4:00 PM</div><div><span class="badge b-cancel">Cancelled</span></div><div>refunded</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: BOOKING FLOW -->
+  <div class="part">
+    <span class="ptag">B · Booking journey</span>
+    <h3>From "Book a session" to confirmed</h3>
+    <p class="psub">Five gentle steps. The visitor always sees one clear next action. Razorpay opens only at step 4; step 5 is the calm confirmation.</p>
+    <div class="flow">
+      <div class="fstep">
+        <div class="fnum">Step 1</div><div class="ftitle">Choose session</div>
+        <div class="mini">
+          <div class="pill sel">First Session · ₹1,800</div>
+          <div class="pill">Ongoing · ₹1,600</div>
+          <div class="pill">Couples · ₹2,800</div>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">Step 2</div><div class="ftitle">Pick a time</div>
+        <div class="mini">
+          June 2026<br>
+          <span class="slot">Mon 2</span><span class="slot sel">Tue 3</span><span class="slot">Wed 4</span>
+          <div style="margin-top:6px;"><span class="slot">10:00</span><span class="slot sel">11:00</span><span class="slot">4:00</span></div>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">Step 3</div><div class="ftitle">Your details</div>
+        <div class="mini">
+          <div class="field">Full name</div>
+          <div class="field">Email</div>
+          <div class="field">Phone</div>
+          <div class="field">What brings you?</div>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">Step 4</div><div class="ftitle">Pay securely</div>
+        <div class="mini rzp">
+          <div class="rlogo">Razorpay</div>
+          First Session
+          <div class="ramt">₹1,800</div>
+          UPI · Card · Netbanking
+          <div class="rbtn">Pay ₹1,800</div>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">Step 5</div><div class="ftitle">Confirmed</div>
+        <div class="mini done">
+          <div class="check">&#10003;</div>
+          You're booked!<br>Tue 3 Jun, 11:00<br><span style="opacity:.8">Email sent</span>
+        </div>
+      </div>
+    </div>
+    <div class="secnote" style="margin-top:18px;"><b>Behind step 4&rarr;5:</b> browser asks Astro to create a Razorpay order &rarr; Razorpay checkout opens &rarr; on success Razorpay returns a signature &rarr; Astro verifies it with the secret key &rarr; only then the booking is written as <i>scheduled</i> in Firestore and the confirmation email fires.</div>
+  </div>
+</div>

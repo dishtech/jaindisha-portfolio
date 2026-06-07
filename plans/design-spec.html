@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disha Psychology — Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --clay:#a85d42; --clay-dk:#8e4a31; --sage:#6b8f71; --sage-dk:#56755b; --sand:#cbb89a;
+    --cream:#f6efe6; --cream2:#fdf8f1; --dark:#3a2e23; --ink:#43352a; --body:#6b5a4a; --line:rgba(168,93,66,.18);
+    --display:'Fraunces',Georgia,serif; --sans:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:var(--sans); color:var(--body); background:var(--cream); line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .layout{ display:grid; grid-template-columns:240px 1fr; max-width:1080px; margin:0 auto; gap:48px; padding:0 32px; }
+
+  /* TOC */
+  aside{ position:sticky; top:0; align-self:start; height:100vh; padding:54px 0; overflow:auto; }
+  aside .badge{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#fff; background:var(--clay); padding:5px 11px; border-radius:100px; margin-bottom:18px; }
+  aside h2{ font-family:var(--display); font-size:21px; color:var(--ink); font-weight:600; line-height:1.15; margin-bottom:22px; }
+  aside nav a{ display:block; font-size:13.5px; color:var(--body); text-decoration:none; padding:7px 0; border-left:2px solid transparent; padding-left:12px; margin-left:-2px; transition:color .2s, border-color .2s; }
+  aside nav a:hover{ color:var(--clay); border-color:var(--clay); }
+
+  main{ padding:54px 0 100px; max-width:680px; }
+  .doc-head{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .doc-head h1{ font-family:var(--display); font-size:clamp(34px,5vw,52px); color:var(--ink); font-weight:600; line-height:1.05; letter-spacing:-.01em; }
+  .status{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+  .tag{ font-size:12px; font-weight:600; padding:6px 13px; border-radius:100px; }
+  .tag.ok{ background:#e3ecdf; color:var(--sage-dk); }
+  .tag.mut{ background:var(--cream2); border:1px solid var(--line); color:var(--body); }
+
+  section{ margin-bottom:46px; scroll-margin-top:24px; }
+  section > h2{ font-family:var(--display); font-size:27px; color:var(--ink); font-weight:600; margin-bottom:6px; display:flex; align-items:baseline; gap:12px; }
+  section > h2 .n{ font-size:14px; color:var(--clay); font-weight:600; font-family:var(--sans); letter-spacing:.05em; }
+  section > h3{ font-family:var(--display); font-size:19px; color:var(--ink); font-weight:600; margin:24px 0 8px; }
+  p{ margin:10px 0; }
+  ul,ol{ margin:10px 0 10px 4px; padding-left:22px; }
+  li{ margin:6px 0; }
+  strong{ color:var(--ink); font-weight:600; }
+  em{ color:var(--clay); }
+  a.inline{ color:var(--clay); }
+  code{ font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--cream2); border:1px solid var(--line); padding:1px 6px; border-radius:5px; color:var(--clay-dk); }
+  .lead{ font-size:17px; color:var(--body); }
+
+  .callout{ background:var(--cream2); border:1px solid var(--line); border-left:3px solid var(--sage); border-radius:10px; padding:14px 18px; margin:16px 0; font-size:14.5px; }
+  .callout.warn{ border-left-color:var(--clay); }
+  .callout b{ color:var(--ink); }
+
+  table{ width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; background:var(--cream2); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  th,td{ text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ background:rgba(168,93,66,.07); font-family:var(--sans); font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--clay-dk); font-weight:700; }
+  tr:last-child td{ border-bottom:none; }
+  .sw{ display:inline-block; width:14px; height:14px; border-radius:4px; vertical-align:-2px; margin-right:7px; border:1px solid rgba(0,0,0,.1); }
+
+  .arc{ font-family:ui-monospace,Menlo,monospace; font-size:13px; background:var(--dark); color:#e9ddcd; border-radius:12px; padding:18px 20px; line-height:1.5; white-space:pre; overflow:auto; margin:16px 0; }
+
+  @media(max-width:820px){ .layout{ grid-template-columns:1fr; gap:0; } aside{ position:static; height:auto; padding:40px 0 0; } aside nav{ display:flex; flex-wrap:wrap; gap:4px 14px; } aside nav a{ border:none; padding-left:0; margin:0; } main{ padding-top:30px; } }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside>
+    <span class="badge">Concept locked</span>
+    <h2>Disha Psychology<br>Design Spec</h2>
+    <nav>
+      <a href="#overview">1 · Overview</a>
+      <a href="#brand">2 · Brand &amp; tone</a>
+      <a href="#system">3 · Design system</a>
+      <a href="#homepage">4 · Homepage</a>
+      <a href="#booking">5 · Booking flow</a>
+      <a href="#admin">6 · Admin</a>
+      <a href="#arch">7 · Architecture</a>
+      <a href="#locked">8 · Locked</a>
+      <a href="#open">9 · Open items</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="doc-head">
+      <h1>Website Design Spec</h1>
+      <div class="status">
+        <span class="tag ok">Design direction approved</span>
+        <span class="tag mut">No code / packages yet</span>
+        <span class="tag mut">Updated 2026-06-03</span>
+      </div>
+    </div>
+
+    <section id="overview">
+      <h2><span class="n">01</span> Overview</h2>
+      <p class="lead">A calm, personal, artistic website for <strong>Disha Jain</strong> — a PsyD trainee, counsellor, and psychology mentor. The site is <strong>counselling-led</strong>: a visitor arriving in a vulnerable moment should feel understood, trust her, and book a paid counselling session in one unhurried scroll — with her psychology-mentoring offering presented as a clear secondary path.</p>
+      <p><strong>Primary goal:</strong> visitor books and pays for a counselling session.<br>
+         <strong>Secondary:</strong> route aspiring-psychologist visitors to her mentoring services; let her see bookings at a glance (admin).</p>
+      <div class="callout"><b>Practitioner — Disha Jain</b> (<code>@psywithdish</code>). PsyD (Doctorate of Psychology) <b>trainee</b> at NIEPVD, Dehradun · MSc Clinical Psychology · BA Psychology · 7+ years in the field. Tagline: <em>"A guide for the mind, a companion for the heart."</em> Existing profile: <a class="inline" href="https://topmate.io/psywithdish">topmate.io/psywithdish</a> · <a class="inline" href="https://www.linkedin.com/in/jaindish">LinkedIn</a> — source for the real content below.</div>
+    </section>
+
+    <section id="brand">
+      <h2><span class="n">02</span> Brand &amp; tone</h2>
+      <ul>
+        <li><strong>Feeling:</strong> peace, warmth, kindness, safety. "Being held," not clinical.</li>
+        <li><strong>Voice:</strong> gentle, plain-spoken, human. No jargon, no hype, no emojis in UI.</li>
+        <li><strong>Personality:</strong> warm-organic editorial. Distinctive and personal.</li>
+        <li><strong>Name / brand:</strong> Disha Jain · handle <code>psywithdish</code>. No "Dr." (she is a trainee).</li>
+      </ul>
+      <div class="callout warn"><b>Trainee positioning — needs her sign-off.</b> Disha is a PsyD <b>trainee</b>, not a licensed psychologist. Copy must read "PsyD trainee / counsellor" and never imply full licensure or use "Dr." Confirm exact credential wording with her and her supervisor / board (RCI) before content lock.</div>
+    </section>
+
+    <section id="system">
+      <h2><span class="n">03</span> Visual design system <span style="font-size:14px;color:var(--body);font-family:var(--sans);font-weight:500">— "Sanctuary"</span></h2>
+      <p>Reference build: <code>home-sanctuary-designed.html</code>.</p>
+
+      <h3>Palette</h3>
+      <table>
+        <tr><th>Role</th><th>Hex</th><th>Use</th></tr>
+        <tr><td><span class="sw" style="background:#a85d42"></span>Clay (primary)</td><td><code>#a85d42</code></td><td>primary buttons, brand, links, accents</td></tr>
+        <tr><td><span class="sw" style="background:#8e4a31"></span>Clay dark</td><td><code>#8e4a31</code></td><td>hover states</td></tr>
+        <tr><td><span class="sw" style="background:#6b8f71"></span>Sage</td><td><code>#6b8f71</code></td><td>secondary accent, testimonial band, kickers</td></tr>
+        <tr><td><span class="sw" style="background:#56755b"></span>Sage dark</td><td><code>#56755b</code></td><td>sage hover / sage text</td></tr>
+        <tr><td><span class="sw" style="background:#cbb89a"></span>Sand</td><td><code>#cbb89a</code></td><td>highlights, featured-card accents, blobs</td></tr>
+        <tr><td><span class="sw" style="background:#f6efe6"></span>Cream</td><td><code>#f6efe6</code></td><td>page background</td></tr>
+        <tr><td><span class="sw" style="background:#fdf8f1"></span>Cream 2</td><td><code>#fdf8f1</code></td><td>cards, alt sections</td></tr>
+        <tr><td><span class="sw" style="background:#3a2e23"></span>Dark</td><td><code>#3a2e23</code></td><td>featured card, final CTA, footer</td></tr>
+        <tr><td><span class="sw" style="background:#43352a"></span>Ink</td><td><code>#43352a</code></td><td>headings</td></tr>
+        <tr><td><span class="sw" style="background:#6b5a4a"></span>Body</td><td><code>#6b5a4a</code></td><td>paragraphs</td></tr>
+      </table>
+
+      <h3>Typography</h3>
+      <ul>
+        <li><strong>Display:</strong> Fraunces (serif, optical sizing) — headings, prices, quote. Italic for accent words (<em>whole, yourself, Always</em>).</li>
+        <li><strong>Body / UI:</strong> Hanken Grotesk — paragraphs, nav, buttons, labels.</li>
+        <li>Responsive scale via <code>clamp()</code>; hero <code>clamp(46px, 6.4vw, 94px)</code>.</li>
+      </ul>
+
+      <h3>Motion <span style="font-size:13px;color:var(--body);font-family:var(--sans);font-weight:500">— GSAP in production, CSS in the mockup</span></h3>
+      <ul>
+        <li>One orchestrated hero load: staggered fade-rise (kicker → headline → lead → CTAs → figure).</li>
+        <li>Scroll-reveal fade-up per section (IntersectionObserver / GSAP ScrollTrigger).</li>
+        <li>Micro-interactions: card lift, button arrow nudge, soft shadow growth, slow floating hero blob.</li>
+        <li>Restraint: calm and subtle, never flashy.</li>
+      </ul>
+
+      <h3>Imagery &amp; texture</h3>
+      <ul>
+        <li>Stock photography for now (Unsplash), swappable for real photos later. Warm, natural light.</li>
+        <li>Arched image frames, organic blurred blobs, film-grain overlay, soft gradient mesh.</li>
+      </ul>
+    </section>
+
+    <section id="homepage">
+      <h2><span class="n">04</span> Homepage structure</h2>
+      <p>Emotional arc: <strong>feel understood → trust her → understand the process → choose → reassurance → act.</strong></p>
+      <ol>
+        <li><strong>Hero</strong> — headline "A gentle space to feel <em>whole</em> again.", tagline "A guide for the mind, a companion for the heart.", two CTAs (Book a session / How I work), arched portrait + floating "PsyD trainee · 7+ yrs" card.</li>
+        <li><strong>You're not alone</strong> — 3 feeling cards drawn from what she works with: Stressed &amp; overthinking · Low self-esteem · At a crossroads (academic / career / relationships).</li>
+        <li><strong>About</strong> — portrait + real bio + credential chips: PsyD trainee (NIEPVD, Dehradun) · MSc Clinical Psychology · BA Psychology · 7+ years.</li>
+        <li><strong>How I work</strong> — her eclectic approach (Person-Centred · CBT · REBT · Psychoanalytic — "tailored to you, not one-size-fits-all"). 3 steps: Reach out → We meet → We continue.</li>
+        <li><strong>Sessions (counselling)</strong> — bookable; <em>Cal.com + Razorpay live here</em>:
+          <ul>
+            <li>Counselling Session — ₹599 · 40 min (featured)</li>
+            <li>Priority Support Session — ₹1,299 · 40 min</li>
+          </ul>
+        </li>
+        <li><strong>For aspiring psychologists</strong> (secondary path) — a band routing students to her mentoring: Student Guidance (₹499–999) · Mock Interview prep (₹799) · Mock Interview series (₹1,890). CTA → mentoring booking.</li>
+        <li><strong>Testimonial</strong> — single serif quote on sage band. <em>(See ethics note.)</em></li>
+        <li><strong>FAQ</strong> — confidentiality · online sessions · first-timer · rescheduling.</li>
+        <li><strong>Final CTA</strong> + footer — "Whenever you're ready, I'm here." Footer links: Topmate, LinkedIn, email.</li>
+      </ol>
+      <div class="callout warn"><b>Testimonial — ethics.</b> Many codes prohibit soliciting testimonials from <em>current</em> clients. Use a past client with written consent, anonymised, or reframe — confirm with Disha.</div>
+      <div class="callout">Still to supply: real session format/durations (Topmate shows 40-min video — online-only?), testimonial(s) with consent, professional photos, contact email.</div>
+    </section>
+
+    <section id="booking">
+      <h2><span class="n">05</span> Booking → payment flow</h2>
+      <ol>
+        <li>Choose session (from Sessions section)</li>
+        <li>Pick a time + details — <b>Cal.com</b> booking widget, synced live to her calendar (no double-booking, auto reminders)</li>
+        <li>Pay — Razorpay checkout (UPI / card / netbanking)</li>
+        <li>Confirmation — slot held in Cal.com + her calendar; email sent</li>
+      </ol>
+      <div class="callout"><b>Scheduling — decided: Cal.com</b> (calendar-synced from day one). Embedded and themed to the Sanctuary palette. Booking is confirmed only after the Razorpay payment is verified server-side, and the Cal.com booking ID is saved on the Firestore record.</div>
+    </section>
+
+    <section id="admin">
+      <h2><span class="n">06</span> Admin dashboard <span style="font-size:14px;color:var(--body);font-family:var(--sans);font-weight:500">— <code>/admin</code>, behind login</span></h2>
+      <ul>
+        <li>Counters: <strong>Total sessions · Scheduled (upcoming) · Completed · Revenue (this month)</strong>.</li>
+        <li>Bookings table: client, session type, date/time, status badge (Scheduled / Completed / Cancelled), amount.</li>
+        <li>Auth-gated; counts come from Firestore.</li>
+      </ul>
+    </section>
+
+    <section id="arch">
+      <h2><span class="n">07</span> Architecture</h2>
+      <p><strong>Stack:</strong> Astro (SSR / hybrid + adapter) · Firebase (Firestore + Auth + Cloud Functions) · Razorpay · Cal.com (scheduling).</p>
+      <div class="arc">Browser  (Astro pages + GSAP)      /admin (Firebase Auth)
+        │                                  │
+        ▼                                  ▼
+Astro server  —  /api/create-order · /api/verify-payment · /api/bookings
+        │            (holds the Razorpay SECRET key)
+        ├──────────────► Firestore   bookings { client, session, datetime, status, amount, calBookingId }
+        ├──────────────► Firebase Auth (admin login)
+        ├──────────────► Razorpay   (order · checkout · signed callback)
+        └──────────────► Cal.com    (calendar-synced slot picker → her Google Calendar)</div>
+      <h3>Security — non-negotiable</h3>
+      <ul>
+        <li>Razorpay <strong>secret key never</strong> reaches the browser (server env var only).</li>
+        <li><strong>Payment signature verified server-side</strong> before a booking is marked paid — a faked client "success" is rejected.</li>
+        <li>Admin behind real auth, not a secret URL.</li>
+        <li>HTTPS everywhere; Firestore rules lock writes to the server and gate admin reads.</li>
+      </ul>
+    </section>
+
+    <section id="locked">
+      <h2><span class="n">08</span> Decisions locked</h2>
+      <ul>
+        <li>Design direction: <strong>Sanctuary</strong> (warm) + production-grade design language.</li>
+        <li>Palette, typography, motion as in §3.</li>
+        <li>Payment model: <strong>1:1 session booking</strong>.</li>
+        <li>Scheduling: <strong>Cal.com</strong> (calendar-synced), embedded &amp; themed; payment via Razorpay.</li>
+        <li>Stack: <strong>Astro + Firebase + Razorpay + Cal.com</strong> (SSR mode, not static).</li>
+        <li>Positioning: <strong>counselling-led</strong>; psychology-mentoring as a secondary path.</li>
+        <li>Practitioner: <strong>Disha Jain</strong> (PsyD trainee) — name, credentials &amp; real services confirmed from her Topmate.</li>
+        <li>Domain: <strong>jaindisha.in</strong> · Hosting: <strong>Netlify</strong> (Astro adapter <code>@astrojs/netlify</code>).</li>
+        <li>Booking: <strong>custom Cal.com + Razorpay</strong> (own branded flow, not a Topmate link).</li>
+        <li>Imagery: stock for now, real photos later.</li>
+      </ul>
+    </section>
+
+    <section id="open">
+      <h2><span class="n">09</span> Open items before build</h2>
+      <ol>
+        <li><em>(Later)</em> Professional photos of Disha (Topmate avatar is low-res placeholder).</li>
+        <li><em>(Later)</em> Confirm session format &amp; durations (Topmate shows 40-min video — online-only?).</li>
+        <li><em>(Later)</em> Real FAQ answers, testimonial(s) with written consent (see ethics note).</li>
+        <li><em>(Later)</em> Contact email for booking notifications. (Location: Dehradun.)</li>
+      </ol>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>
