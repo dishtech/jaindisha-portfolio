@@ -1,0 +1,531 @@
+---
+---
+
+<div id="booking-modal" class="bm-overlay" hidden>
+  <div class="bm-dialog" role="dialog" aria-modal="true" aria-labelledby="bm-title">
+    <button class="bm-close" type="button" aria-label="Close">&times;</button>
+    <p class="kicker" id="bm-kicker">Book a session</p>
+    <h2 class="serif" id="bm-title">Choose a time</h2>
+    <div id="bm-step"></div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const modal = document.getElementById('booking-modal');
+    if (!modal) return;
+    const stepEl = modal.querySelector('#bm-step');
+    const titleEl = modal.querySelector('#bm-title');
+    const kickerEl = modal.querySelector('#bm-kicker');
+    const closeBtn = modal.querySelector('.bm-close');
+
+    const TZ = 'Asia/Kolkata';
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    const dayKey = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }); // YYYY-MM-DD
+    const fmtTime = new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: TZ });
+    const fmtLong = new Intl.DateTimeFormat('en-IN', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ });
+    const pad = (n) => String(n).padStart(2, '0');
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    let state = {};
+
+    function open(btn) {
+      state = {
+        sessionId: btn.getAttribute('data-book'),
+        sessionName: btn.getAttribute('data-book-name') || 'Book a session',
+        price: btn.getAttribute('data-book-price') || '',
+        duration: btn.getAttribute('data-book-duration') || '',
+        byDate: {}, keys: [], view: 0, minIdx: 0, maxIdx: 0, selected: '', slot: '',
+      };
+      kickerEl.textContent = state.sessionName;
+      titleEl.textContent = 'Choose a time';
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      loadSlots();
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+      stepEl.innerHTML = '';
+    }
+    function loading(msg) { stepEl.innerHTML = `<p class="bm-muted">${msg}</p>`; }
+    function message(title, msg) {
+      titleEl.textContent = title;
+      stepEl.innerHTML = `<p class="bm-muted">${msg}</p><button type="button" class="pill ghost bm-done">Close</button>`;
+      stepEl.querySelector('.bm-done').addEventListener('click', close);
+    }
+
+    async function loadSlots() {
+      loading('Finding open times…');
+      try {
+        const r = await fetch(`/api/availability?sessionId=${encodeURIComponent(state.sessionId)}`);
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'failed');
+        if (!data.configured) {
+          return message('Opening soon', 'Online booking for this session is opening shortly. Please check back in a little while.');
+        }
+        const byDate = {};
+        for (const s of data.slots || []) {
+          const k = dayKey.format(new Date(s.start));
+          (byDate[k] ||= []).push(s.start);
+        }
+        const keys = Object.keys(byDate).sort();
+        if (!keys.length) return message('No times right now', 'There are no open times in the next two weeks. Please check back soon.');
+        state.byDate = byDate;
+        state.keys = keys;
+        state.minIdx = monthIdx(keys[0]);
+        state.maxIdx = monthIdx(keys[keys.length - 1]);
+        state.view = state.minIdx;
+        state.selected = keys[0];
+        renderPicker();
+      } catch (e) {
+        message('Just a moment', 'Sorry, I couldn’t load available times right now. Please try again in a few minutes.');
+      }
+    }
+
+    function monthIdx(key) { const [y, m] = key.split('-').map(Number); return y * 12 + (m - 1); }
+
+    function renderPicker() {
+      titleEl.textContent = 'Choose a time';
+      stepEl.innerHTML =
+        `<div class="bm-pick">` +
+        `<div class="bm-cal" id="bm-cal"></div>` +
+        `<div class="bm-slots" id="bm-slots"></div>` +
+        `</div>`;
+      renderCalendar();
+      renderTimes();
+    }
+
+    function renderCalendar() {
+      const cal = stepEl.querySelector('#bm-cal');
+      const year = Math.floor(state.view / 12);
+      const month = state.view % 12;
+      const firstDow = new Date(Date.UTC(year, month, 1)).getUTCDay();
+      const days = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+      const todayKey = dayKey.format(new Date());
+
+      let cells = '';
+      for (let i = 0; i < firstDow; i++) cells += `<span class="bm-cell empty"></span>`;
+      for (let d = 1; d <= days; d++) {
+        const key = `${year}-${pad(month + 1)}-${pad(d)}`;
+        const has = !!state.byDate[key];
+        const cls = ['bm-cell'];
+        if (has) cls.push('open');
+        if (key === state.selected) cls.push('sel');
+        if (key === todayKey) cls.push('today');
+        if (has) {
+          cells += `<button type="button" class="${cls.join(' ')}" data-date="${key}" aria-label="${esc(fmtLong.format(new Date(key + 'T00:00:00+05:30')))}"${key === state.selected ? ' aria-pressed="true"' : ''}>${d}<span class="bm-dot"></span></button>`;
+        } else {
+          cells += `<span class="${cls.join(' ')}">${d}</span>`;
+        }
+      }
+
+      const prevOff = state.view <= state.minIdx;
+      const nextOff = state.view >= state.maxIdx;
+      cal.innerHTML =
+        `<div class="bm-cal-head">` +
+        `<button type="button" class="bm-nav" id="bm-prev" aria-label="Previous month"${prevOff ? ' disabled' : ''}>&lsaquo;</button>` +
+        `<span class="bm-month serif">${MONTHS[month]} ${year}</span>` +
+        `<button type="button" class="bm-nav" id="bm-next" aria-label="Next month"${nextOff ? ' disabled' : ''}>&rsaquo;</button>` +
+        `</div>` +
+        `<div class="bm-dow">${WEEK.map((w) => `<span>${w}</span>`).join('')}</div>` +
+        `<div class="bm-grid">${cells}</div>`;
+
+      const prev = cal.querySelector('#bm-prev');
+      const next = cal.querySelector('#bm-next');
+      if (!prevOff) prev.addEventListener('click', () => { state.view--; renderCalendar(); });
+      if (!nextOff) next.addEventListener('click', () => { state.view++; renderCalendar(); });
+      cal.querySelectorAll('[data-date]').forEach((b) =>
+        b.addEventListener('click', () => { state.selected = b.getAttribute('data-date'); renderCalendar(); renderTimes(); })
+      );
+    }
+
+    function renderTimes() {
+      const wrap = stepEl.querySelector('#bm-slots');
+      const times = state.byDate[state.selected] || [];
+      const heading = state.selected ? fmtLong.format(new Date(state.selected + 'T00:00:00+05:30')) : 'Pick a date';
+      let html = `<p class="bm-slots-head">${esc(heading)}</p>`;
+      if (!times.length) {
+        html += `<p class="bm-muted bm-noslot">No open times this day.</p>`;
+      } else {
+        html += `<div class="bm-times" role="listbox">`;
+        for (const start of times) {
+          html += `<button class="bm-time" type="button" role="option" data-slot="${start}">${fmtTime.format(new Date(start))}</button>`;
+        }
+        html += `</div>`;
+      }
+      wrap.innerHTML = html;
+      wrap.querySelectorAll('[data-slot]').forEach((b) =>
+        b.addEventListener('click', () => { state.slot = b.getAttribute('data-slot'); renderDetails(); })
+      );
+    }
+
+    function renderDetails() {
+      titleEl.textContent = 'Your details';
+      kickerEl.textContent = state.sessionName;
+      const day = fmtLong.format(new Date(state.slot));
+      const time = fmtTime.format(new Date(state.slot));
+      const meta = [state.duration, state.price].filter(Boolean).join(' · ');
+      stepEl.innerHTML =
+        `<div class="bm-summary">` +
+        `<div class="bm-summary-when"><span class="bm-sday">${esc(day)}</span><span class="bm-stime">${esc(time)}${meta ? ` &middot; ${esc(meta)}` : ''}</span></div>` +
+        `<button type="button" class="bm-change">Change</button>` +
+        `</div>` +
+        `<form id="bm-form" class="bm-form" novalidate>` +
+        `<label class="bm-field"><span>Your name</span><input name="name" required autocomplete="name" placeholder="First & last name" /></label>` +
+        `<label class="bm-field"><span>Email</span><input name="email" type="email" required autocomplete="email" placeholder="you@email.com" /></label>` +
+        `<label class="bm-field"><span>Phone <em>(optional)</em></span><input name="phone" type="tel" autocomplete="tel" placeholder="For session reminders" /></label>` +
+        `<label class="bm-field"><span>Anything you’d like me to know? <em>(optional)</em></span><textarea name="note" rows="3" placeholder="A line about what’s bringing you here — entirely up to you."></textarea></label>` +
+        `<p class="bm-err" hidden></p>` +
+        `<button class="pill solid bm-submit" type="submit">Continue to payment <span class="ar">&rarr;</span></button>` +
+        `<p class="bm-reassure">Secure payment via Razorpay. Your details stay private.</p>` +
+        `</form>`;
+      stepEl.querySelector('.bm-change').addEventListener('click', renderPicker);
+      stepEl.querySelector('#bm-form').addEventListener('submit', onSubmit);
+    }
+
+    async function onSubmit(e) {
+      e.preventDefault();
+      const f = e.target;
+      const errEl = f.querySelector('.bm-err');
+      const btn = f.querySelector('button[type=submit]');
+      errEl.hidden = true;
+      if (!f.name.value.trim() || !f.email.value.trim()) {
+        errEl.textContent = 'Please add your name and email so I can confirm your booking.';
+        errEl.hidden = false;
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Starting secure payment…';
+      const details = {
+        sessionId: state.sessionId,
+        slotStart: state.slot,
+        name: f.name.value.trim(),
+        email: f.email.value.trim(),
+        phone: f.phone.value.trim(),
+        note: f.note.value.trim(),
+      };
+      try {
+        const r = await fetch('/api/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(details),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'Could not start payment');
+        await openCheckout(data, details);
+      } catch (err) {
+        errEl.textContent = (err && err.message) || 'Something went wrong. Please try again.';
+        errEl.hidden = false;
+        btn.disabled = false;
+        btn.innerHTML = 'Continue to payment <span class="ar">&rarr;</span>';
+      }
+    }
+
+    function ensureRazorpay() {
+      return new Promise((resolve, reject) => {
+        if (window.Razorpay) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('Could not load the payment library'));
+        document.head.appendChild(s);
+      });
+    }
+
+    async function openCheckout(order, details) {
+      await ensureRazorpay();
+      const rzp = new window.Razorpay({
+        key: order.keyId,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Disha Jain',
+        description: state.sessionName,
+        order_id: order.orderId,
+        prefill: { name: details.name, email: details.email, contact: details.phone },
+        theme: { color: '#a85d42' },
+        handler: async (resp) => {
+          titleEl.textContent = 'Confirming…';
+          loading('Confirming your booking…');
+          try {
+            const v = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(resp),
+            });
+            const out = await v.json();
+            if (out.ok) renderSuccess();
+            else renderPaymentIssue();
+          } catch {
+            renderPaymentIssue();
+          }
+        },
+        modal: { ondismiss: () => { /* user closed checkout; order stays pending */ } },
+      });
+      rzp.open();
+    }
+
+    function renderSuccess() {
+      kickerEl.textContent = 'You’re booked';
+      titleEl.textContent = 'See you soon.';
+      stepEl.innerHTML = `<p class="bm-muted">Your session is confirmed and a warm note with the details is on its way to your inbox. Take care until then.</p><button type="button" class="pill solid bm-done">Done</button>`;
+      stepEl.querySelector('.bm-done').addEventListener('click', close);
+    }
+    function renderPaymentIssue() {
+      titleEl.textContent = 'Almost there';
+      stepEl.innerHTML = `<p class="bm-muted">Your payment went through, but we hit a snag confirming the slot. Don’t worry, I’ll reach out by email to finalise it. You won’t be charged twice.</p><button type="button" class="pill solid bm-done">Close</button>`;
+      stepEl.querySelector('.bm-done').addEventListener('click', close);
+    }
+
+    closeBtn.addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) close(); });
+    document.querySelectorAll('[data-book]').forEach((el) =>
+      el.addEventListener('click', (e) => { e.preventDefault(); open(el); })
+    );
+  })();
+</script>
+
+<style is:global>
+  /* Global (not scoped): the calendar/times/form are injected via client JS, so
+     Astro's scoped attribute is never added to them. All selectors are bm-prefixed. */
+  .bm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(58, 46, 35, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .bm-overlay[hidden] { display: none; }
+  .bm-dialog {
+    position: relative;
+    background: var(--cream2);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: clamp(26px, 3.5vw, 38px);
+    width: 100%;
+    max-width: 640px;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 50px 100px -30px rgba(58, 46, 35, 0.62);
+  }
+  .bm-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--body);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .bm-close:hover { opacity: 1; }
+  .bm-dialog h2 { font-size: clamp(24px, 3vw, 32px); margin: 6px 0 22px; }
+  .bm-muted { font-size: 15px; color: var(--body); margin-bottom: 18px; line-height: 1.55; }
+
+  /* ---- picker: calendar + times ---- */
+  .bm-pick {
+    display: grid;
+    grid-template-columns: 1fr 0.82fr;
+    gap: clamp(18px, 3vw, 30px);
+    align-items: start;
+  }
+  .bm-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .bm-month { font-size: 19px; font-weight: 600; color: var(--ink); }
+  .bm-nav {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--cream2);
+    color: var(--clay);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .bm-nav:hover:not(:disabled) { background: var(--clay); color: #fff; border-color: var(--clay); }
+  .bm-nav:disabled { opacity: 0.32; cursor: default; }
+  .bm-dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  .bm-dow span {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--sage-dk);
+    padding-bottom: 2px;
+  }
+  .bm-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .bm-cell {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sans);
+    font-size: 14px;
+    border-radius: 12px;
+    border: none;
+    background: none;
+    color: #c4b6a4; /* unavailable / muted */
+  }
+  .bm-cell.empty { background: none; }
+  .bm-cell.open {
+    color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+    background: rgba(168, 93, 66, 0.07);
+    transition: background 0.18s, color 0.18s, transform 0.18s;
+  }
+  .bm-cell.open:hover { background: rgba(168, 93, 66, 0.16); transform: translateY(-1px); }
+  .bm-cell.today { box-shadow: inset 0 0 0 1.5px var(--sand); }
+  .bm-cell.sel {
+    background: var(--clay) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px -8px rgba(168, 93, 66, 0.8);
+  }
+  .bm-dot {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--clay);
+  }
+  .bm-cell.sel .bm-dot { background: rgba(255, 255, 255, 0.85); }
+
+  .bm-slots {
+    border-left: 1px solid var(--line);
+    padding-left: clamp(14px, 2.4vw, 26px);
+    min-height: 240px;
+  }
+  .bm-slots-head {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .bm-times {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .bm-time {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid var(--line);
+    background: var(--cream2);
+    color: var(--ink);
+    border-radius: 12px;
+    padding: 11px 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.18s, background 0.18s, color 0.18s, transform 0.18s;
+  }
+  .bm-time:hover { border-color: var(--clay); background: #fff; transform: translateY(-1px); }
+  .bm-noslot { margin-top: 6px; }
+
+  /* ---- details form ---- */
+  .bm-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: rgba(107, 143, 113, 0.1);
+    border: 1px solid rgba(107, 143, 113, 0.25);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+  }
+  .bm-summary-when { display: flex; flex-direction: column; gap: 3px; }
+  .bm-sday { font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--ink); }
+  .bm-stime { font-size: 13px; color: var(--sage-dk); font-weight: 600; }
+  .bm-change {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--sage-dk);
+    color: var(--sage-dk);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .bm-change:hover { background: var(--sage-dk); color: #fff; }
+  .bm-form { display: flex; flex-direction: column; gap: 15px; }
+  .bm-field { display: flex; flex-direction: column; gap: 7px; }
+  .bm-field > span { font-size: 12.5px; font-weight: 700; color: var(--ink); letter-spacing: 0.01em; }
+  .bm-field em { color: var(--body); font-weight: 500; font-style: normal; }
+  .bm-form input, .bm-form textarea {
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .bm-form textarea { resize: vertical; }
+  .bm-form input::placeholder, .bm-form textarea::placeholder { color: #b6a691; }
+  .bm-form input:focus, .bm-form textarea:focus {
+    outline: none;
+    border-color: var(--clay);
+    box-shadow: 0 0 0 3px rgba(168, 93, 66, 0.12);
+  }
+  .bm-submit { justify-content: center; margin-top: 4px; }
+  .bm-err { color: var(--clay-dk); font-size: 13.5px; margin: 0; font-weight: 600; }
+  .bm-reassure { font-size: 12px; color: var(--body); text-align: center; margin: 2px 0 0; }
+  #bm-step .pill.bm-done { margin-top: 4px; }
+
+  @media (max-width: 560px) {
+    .bm-pick { grid-template-columns: 1fr; gap: 4px; }
+    .bm-slots {
+      border-left: none;
+      border-top: 1px solid var(--line);
+      padding-left: 0;
+      padding-top: 18px;
+      margin-top: 18px;
+      min-height: 0;
+    }
+    .bm-times { flex-direction: row; flex-wrap: wrap; max-height: none; }
+    .bm-time { flex: 0 0 auto; }
+  }
+</style>
