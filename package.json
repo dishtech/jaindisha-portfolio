@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node --env-file-if-exists=.env node_modules/astro/bin/astro.mjs dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -12,6 +12,9 @@
   "dependencies": {
     "@astrojs/netlify": "^7.0.12",
     "astro": "^6.4.4",
-    "gsap": "^3.13.0"
+    "firebase": "^11.10.0",
+    "firebase-admin": "^13.10.0",
+    "gsap": "^3.13.0",
+    "razorpay": "^2.9.6"
   }
 }

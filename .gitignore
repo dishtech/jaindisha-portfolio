@@ -13,8 +13,20 @@ node_modules/
 .env.*
 !.env.example
 
+# firebase service account keys (NEVER commit)
+*firebase-adminsdk*.json
+serviceAccount*.json
+*service-account*.json
+
 # os / editor
 .DS_Store
 *.log
 npm-debug.log*
 .gstack/
+
+# local agent/session state
+.claude/
+
+
+# docs
+/plans
