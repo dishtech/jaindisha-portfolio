@@ -9,9 +9,9 @@ interface Props {
 }
 
 const {
-  title = 'Disha Jain — Counselling & Psychology Mentoring',
+  title = 'Disha Jain · Counselling & Psychology Mentoring',
   description =
-    'Warm, one-to-one online counselling with Disha Jain — a PsyD trainee and counsellor with 7+ years of experience. A gentle space for stress, self-doubt, and the in-between moments. Plus mentoring for aspiring psychologists.',
+    'Warm, one-to-one online counselling with Disha Jain, a PsyD trainee and counsellor with 7+ years of experience. A calm space for stress, self-doubt, and the moments in between. Mentoring for aspiring psychologists too.',
   image = '/og-default.png',
 } = Astro.props;
 
@@ -63,7 +63,7 @@ const ogImage = new URL(image, Astro.site);
       <slot />
     </div>
 
-    <!-- Orchestrated, restrained motion — GSAP + ScrollTrigger.
+    <!-- Orchestrated, restrained motion with GSAP + ScrollTrigger.
          Replaces the mockup's IntersectionObserver + CSS @keyframes. -->
     <script>
       import { gsap } from 'gsap';
@@ -75,7 +75,7 @@ const ogImage = new URL(image, Astro.site);
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       if (reduce) {
-        // Skip to final state — reveal everything, no animation.
+        // Skip to final state: reveal everything, no animation.
         root.classList.remove('js-anim');
       } else {
         // Hero: staggered fade-rise (only on pages that have a hero).
