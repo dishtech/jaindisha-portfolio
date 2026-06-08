@@ -11,9 +11,31 @@ import Testimonial from '../components/Testimonial.astro';
 import Faq from '../components/Faq.astro';
 import FinalCta from '../components/FinalCta.astro';
 import Footer from '../components/Footer.astro';
+import BookingModal from '../components/BookingModal.astro';
+import { social } from '../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Disha Jain · Counselling & Psychology Mentoring',
+  url: 'https://jaindisha.in',
+  image: 'https://jaindisha.in/disha.jpeg',
+  description:
+    'Warm, one-to-one online counselling and psychology mentoring with Disha Jain, a PsyD trainee and counsellor with 7+ years of experience.',
+  areaServed: 'IN',
+  priceRange: '₹599-₹3,399',
+  founder: {
+    '@type': 'Person',
+    name: 'Disha Jain',
+    jobTitle: 'Counsellor & PsyD trainee',
+    sameAs: [social.linkedin],
+  },
+  sameAs: [social.linkedin],
+};
 ---
 
 <Base>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
   <Nav />
   <Hero />
   <Feelings />
@@ -25,4 +47,5 @@ import Footer from '../components/Footer.astro';
   <Faq />
   <FinalCta />
   <Footer />
+  <BookingModal />
 </Base>

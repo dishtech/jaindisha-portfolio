@@ -5,8 +5,7 @@
  *   1. Never "Dr." and never imply licensure. She is a PsyD *trainee* and counsellor.
  *   2. No fabricated client testimonial. The quote below is in her own voice.
  *
- * Prices and packages are synced from her Topmate (topmate.io/psywithdish).
- * `amountPaise` on sessions seeds the server-side price source at M2.
+ * Prices/packages match the server price source in src/data/sessions.ts (paise).
  */
 
 export interface NavLink {
@@ -55,7 +54,6 @@ export interface Faq {
 /* ---- practitioner ---- */
 export const practitioner = {
   name: 'Disha Jain',
-  handle: 'psywithdish',
   role: 'PsyD trainee · Counsellor & psychology mentor',
   tagline: 'A guide for the mind, a companion for the heart.',
   experience: '7+ yrs',
@@ -64,7 +62,6 @@ export const practitioner = {
 } as const;
 
 export const social = {
-  topmate: 'https://topmate.io/psywithdish',
   linkedin: 'https://www.linkedin.com/in/jaindish',
   email: '', // real booking email to be supplied before launch (M6)
 } as const;
@@ -146,7 +143,7 @@ export const steps: Step[] = [
   },
 ];
 
-/* ---- counselling sessions (bookable; primary path), synced from Topmate ---- */
+/* ---- counselling sessions (bookable; primary path) ---- */
 export const sessions: SessionType[] = [
   {
     id: 'counselling',
@@ -168,7 +165,7 @@ export const sessions: SessionType[] = [
   },
 ];
 
-/* ---- mentoring (secondary path; shown in full on /mentoring), synced from Topmate ---- */
+/* ---- mentoring (secondary path; shown in full on /mentoring). ids match sessions.ts keys ---- */
 export const mentoringAbout = {
   intro:
     "I'm Disha, a PsyD trainee at NIEPVD, Dehradun. I mentor psychology students and early-career psychologists through the path I once walked myself: entrance prep, mock interviews, and finding your footing in the field.",
@@ -186,28 +183,28 @@ export const mentoringAbout = {
 
 export const mentoring: MentoringOffer[] = [
   {
-    id: 'intro',
+    id: 'mentoring-intro',
     name: 'Introductory Psych Guidance',
     desc: 'A short, low-pressure first chat to point you in the right direction.',
     price: '₹599',
     duration: '20 minutes',
   },
   {
-    id: 'student-guidance',
+    id: 'mentoring-student',
     name: 'Psychology Student Guidance',
     desc: 'Course choices, career direction, and the road ahead, from someone a few steps in front of you.',
     price: '₹999',
     duration: '40 minutes',
   },
   {
-    id: 'mock-interview',
+    id: 'mentoring-mock',
     name: 'Mock Interview · Entrance Prep',
     desc: 'A realistic practice interview with honest, specific feedback for psychology entrances.',
     price: '₹999',
     duration: '40 minutes',
   },
   {
-    id: 'mock-series',
+    id: 'mentoring-mock-series',
     name: 'Mock Interview Series',
     desc: 'Three mock interviews so you walk in genuinely ready.',
     price: '₹2,499',
@@ -215,7 +212,7 @@ export const mentoring: MentoringOffer[] = [
     tag: 'Best value',
   },
   {
-    id: 'priority-mocks',
+    id: 'mentoring-priority-mocks',
     name: 'Priority Mocks + Guidance',
     desc: 'Three priority sessions blending mock interviews and guidance, scheduled fast.',
     price: '₹3,399',

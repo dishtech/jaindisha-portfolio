@@ -17,7 +17,6 @@ import { practitioner, social, footer } from '../data/site';
 
     <div>
       <h4>Reach me</h4>
-      <a href={social.topmate} target="_blank" rel="noopener noreferrer">Topmate · @{practitioner.handle}</a>
       <a href={social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
       {
         social.email
@@ -26,6 +25,16 @@ import { practitioner, social, footer } from '../data/site';
       }
       <span class="muted">{practitioner.location}</span>
     </div>
+  </div>
+
+  <div class="wrap foot-legal">
+    <span>© 2026 Disha Jain</span>
+    <nav class="legal-links">
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/refund">Refunds</a>
+      <a href="/contact">Contact</a>
+    </nav>
   </div>
 </footer>
 
@@ -81,5 +90,32 @@ import { practitioner, social, footer } from '../data/site';
     color: var(--sage-dk);
     margin-bottom: 12px;
     font-weight: 700;
+  }
+
+  .foot-legal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--body);
+    opacity: 0.85;
+  }
+  .legal-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .legal-links a {
+    color: var(--body);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .legal-links a:hover {
+    color: var(--clay);
   }
 </style>

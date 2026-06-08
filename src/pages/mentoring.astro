@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { mentoring, mentoringAbout, social } from '../data/site';
+import BookingModal from '../components/BookingModal.astro';
+import { mentoring, mentoringAbout } from '../data/site';
 
 const title = 'Mentoring for aspiring psychologists · Disha Jain';
 const description =
@@ -53,10 +54,9 @@ const description =
                   <span class="oprice">{o.price}</span>
                   <span class="odur">{o.duration}</span>
                 </div>
-                {/* M3: replace interim Topmate link with the in-page booking flow */}
-                <a class="pill solid obook" href={social.topmate} target="_blank" rel="noopener noreferrer">
+                <button type="button" class="pill solid obook" data-book={o.id} data-book-name={o.name} data-book-price={o.price} data-book-duration={o.duration}>
                   Book <span class="ar">&rarr;</span>
-                </a>
+                </button>
               </div>
             ))
           }
@@ -70,15 +70,16 @@ const description =
         <div class="m-final rv">
           <h2 class="serif">Not sure where to start?</h2>
           <p>Start with a short Introductory Guidance call, and we'll figure out the next step together.</p>
-          <a class="pill solid" href={social.topmate} target="_blank" rel="noopener noreferrer">
+          <button type="button" class="pill solid" data-book="mentoring-intro" data-book-name="Introductory Psych Guidance" data-book-price="₹599" data-book-duration="20 minutes">
             Start with an intro call <span class="ar">&rarr;</span>
-          </a>
+          </button>
         </div>
       </div>
     </section>
   </main>
 
   <Footer />
+  <BookingModal />
 </Base>
 
 <style>

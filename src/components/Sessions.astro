@@ -1,5 +1,5 @@
 ---
-import { sessions, social } from '../data/site';
+import { sessions } from '../data/site';
 ---
 
 <section id="sessions">
@@ -18,10 +18,9 @@ import { sessions, social } from '../data/site';
             <p class="sdesc">{s.desc}</p>
             <div class="price">{s.price}</div>
             <div class="per">{s.duration}</div>
-            {/* M3: replace this interim Topmate link with the in-page BookingModal (Cal.com + Razorpay) */}
-            <a class="pill solid" href={social.topmate} target="_blank" rel="noopener noreferrer">
+            <button type="button" class="pill solid" data-book={s.id} data-book-name={s.name} data-book-price={s.price} data-book-duration={s.duration}>
               Book &amp; pay <span class="ar">&rarr;</span>
-            </a>
+            </button>
           </div>
         ))
       }
