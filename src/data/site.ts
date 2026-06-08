@@ -71,8 +71,9 @@ export const social = {
 
 /* ---- images (warm, faceless placeholders; swap to Disha's real photos at M6) ---- */
 export const images = {
+  // hero stays a calm, faceless nature image (swap to a real photo later if wanted)
   hero: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=900&q=80',
-  about: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800&q=80',
+  about: '/disha.jpeg', // Disha's real portrait
 } as const;
 
 /* ---- nav (cross-page: "/#id" works from any page; Mentoring is its own page) ---- */
