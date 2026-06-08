@@ -78,15 +78,17 @@ const ogImage = new URL(image, Astro.site);
         // Skip to final state — reveal everything, no animation.
         root.classList.remove('js-anim');
       } else {
-        // Hero: staggered fade-rise (kicker → headline → lead → CTAs → figure).
-        gsap.to('.stg > *:not(.b1)', {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: 'power3.out',
-          stagger: 0.12,
-          delay: 0.1,
-        });
+        // Hero: staggered fade-rise (only on pages that have a hero).
+        if (document.querySelector('.stg')) {
+          gsap.to('.stg > *:not(.b1)', {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            stagger: 0.12,
+            delay: 0.1,
+          });
+        }
 
         // Sections: scroll-reveal fade-up, once per element.
         gsap.utils.toArray<HTMLElement>('.rv').forEach((el) => {
@@ -99,8 +101,10 @@ const ogImage = new URL(image, Astro.site);
           });
         });
 
-        // Slow floating hero blob.
-        gsap.to('.b1', { y: -16, duration: 4.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
+        // Slow floating hero blob (only if present).
+        if (document.querySelector('.b1')) {
+          gsap.to('.b1', { y: -16, duration: 4.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
+        }
       }
     </script>
   </body>

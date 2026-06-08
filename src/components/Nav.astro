@@ -4,11 +4,11 @@ import { navLinks } from '../data/site';
 
 <nav>
   <div class="wrap row">
-    <span class="brand">Disha Jain</span>
+    <a href="/" class="brand">Disha Jain</a>
     <div class="navlinks">
       {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
     </div>
-    <a href="#sessions" class="pill solid">Book a session <span class="ar">&rarr;</span></a>
+    <a href="/#sessions" class="pill solid">Book a session <span class="ar">&rarr;</span></a>
   </div>
 </nav>
 
@@ -29,6 +29,7 @@ import { navLinks } from '../data/site';
   }
   nav .brand {
     margin-right: auto;
+    text-decoration: none;
   }
   .navlinks {
     display: flex;

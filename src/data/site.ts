@@ -1,13 +1,12 @@
 /**
- * Real content for jaindisha.in — the single source of truth the homepage reads from.
+ * Real content for jaindisha.in — the single source of truth the site reads from.
  *
- * Sourced from Disha's Topmate + the design spec. Two hard rules baked in here:
+ * Two hard rules baked in here:
  *   1. Never "Dr." and never imply licensure — she is a PsyD *trainee* + counsellor.
  *   2. No fabricated client testimonial — the quote below is in her own voice.
  *
- * Items marked `review: true` (FAQ) are sensible drafts that need Disha's sign-off
- * before the M6 launch. The `amountPaise` on sessions seeds the server-side price
- * source (sessions.ts) at M2 — prices are never trusted from the client.
+ * Prices/packages are synced from her Topmate (topmate.io/psywithdish).
+ * `amountPaise` on sessions seeds the server-side price source at M2.
  */
 
 export interface NavLink {
@@ -31,8 +30,8 @@ export interface SessionType {
   id: string;
   name: string;
   desc: string;
-  price: string; // display, e.g. "₹599"
-  amountPaise: number; // server-side seed for M2 (₹599 -> 59900)
+  price: string; // display, e.g. "₹999"
+  amountPaise: number; // server-side seed for M2 (₹999 -> 99900)
   duration: string;
   featured?: boolean;
   badge?: string;
@@ -43,6 +42,8 @@ export interface MentoringOffer {
   name: string;
   desc: string;
   price: string;
+  duration: string;
+  tag?: string; // e.g. "Best value"
 }
 
 export interface Faq {
@@ -59,15 +60,13 @@ export const practitioner = {
   tagline: 'A guide for the mind, a companion for the heart.',
   experience: '7+ yrs',
   location: 'Dehradun & online',
-  // Honest, prominent positioning — never licensed, never "Dr.".
   trainee: 'PsyD trainee — not a licensed psychologist.',
 } as const;
 
 export const social = {
   topmate: 'https://topmate.io/psywithdish',
   linkedin: 'https://www.linkedin.com/in/jaindish',
-  // Real booking email to be supplied before launch (M6).
-  email: '',
+  email: '', // real booking email to be supplied before launch (M6)
 } as const;
 
 /* ---- images (warm, faceless placeholders; swap to Disha's real photos at M6) ---- */
@@ -76,19 +75,18 @@ export const images = {
   about: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800&q=80',
 } as const;
 
-/* ---- nav ---- */
+/* ---- nav (cross-page: "/#id" works from any page; Mentoring is its own page) ---- */
 export const navLinks: NavLink[] = [
-  { label: 'About', href: '#about' },
-  { label: 'How I work', href: '#work' },
-  { label: 'Sessions', href: '#sessions' },
-  { label: 'Mentoring', href: '#mentoring' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'About', href: '/#about' },
+  { label: 'How I work', href: '/#work' },
+  { label: 'Sessions', href: '/#sessions' },
+  { label: 'Mentoring', href: '/mentoring' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 /* ---- hero ---- */
 export const hero = {
   kicker: 'Counselling & psychology mentoring',
-  // headline rendered in the component so "whole" can be italic-accented
   lead:
     'Warm, one-to-one counselling for stress, self-doubt, and the in-between moments — at your own pace, in a space that feels safe.',
   badge: { small: 'PsyD trainee', strong: '7+ yrs' },
@@ -147,14 +145,14 @@ export const steps: Step[] = [
   },
 ];
 
-/* ---- counselling sessions (bookable; primary path) ---- */
+/* ---- counselling sessions (bookable; primary path) — synced from Topmate ---- */
 export const sessions: SessionType[] = [
   {
     id: 'counselling',
     name: 'Counselling Session',
-    desc: 'A warm 40-minute session to talk, be heard, and find your footing.',
-    price: '₹599',
-    amountPaise: 59900,
+    desc: 'A warm 40-minute space to talk, be heard, and find your footing.',
+    price: '₹999',
+    amountPaise: 99900,
     duration: '40 minutes · online',
     featured: true,
     badge: 'Most chosen',
@@ -169,30 +167,63 @@ export const sessions: SessionType[] = [
   },
 ];
 
-/* ---- mentoring (secondary path; for aspiring psychologists) ---- */
+/* ---- mentoring (secondary path; shown in full on /mentoring) — synced from Topmate ---- */
+export const mentoringAbout = {
+  intro:
+    "I'm Disha — a PsyD trainee at NIEPVD, Dehradun, mentoring students and early-career psychologists through the road I've walked myself: entrance prep, interviews, and finding direction in the field.",
+  // TODO: confirm exact wording of the achievement with Disha (which exam the AIR 1 is in).
+  air: { num: 'AIR 1', label: 'NIEPVD entrance' },
+  airNote:
+    "I secured All India Rank 1 in the NIEPVD entrance — so this isn't guidance from the sidelines. It's the path I cleared, shared with you.",
+  quals: [
+    'PsyD trainee · NIEPVD, Dehradun',
+    'MSc Clinical Psychology',
+    'BA Psychology',
+    '7+ years',
+  ],
+};
+
 export const mentoring: MentoringOffer[] = [
   {
-    id: 'student-guidance',
-    name: 'Student Guidance',
-    desc: 'Career direction, course choices, and the road ahead — from someone a few steps in front of you.',
-    price: '₹499 – ₹999',
+    id: 'intro',
+    name: 'Introductory Psych Guidance',
+    desc: 'A short, low-pressure first conversation to point you in the right direction.',
+    price: '₹599',
+    duration: '20 minutes',
   },
   {
-    id: 'mock-prep',
-    name: 'Mock Interview Prep',
-    desc: 'Practice and honest feedback for entrance and PG interviews.',
-    price: '₹799',
+    id: 'student-guidance',
+    name: 'Psychology Student Guidance',
+    desc: 'Course choices, career direction, and the road ahead — from someone a few steps in front of you.',
+    price: '₹999',
+    duration: '40 minutes',
+  },
+  {
+    id: 'mock-interview',
+    name: 'Mock Interview · Entrance Prep',
+    desc: 'A realistic practice interview with honest, specific feedback for psychology entrances.',
+    price: '₹999',
+    duration: '40 minutes',
   },
   {
     id: 'mock-series',
     name: 'Mock Interview Series',
-    desc: 'Three sessions to walk in genuinely ready.',
-    price: '₹1,890',
+    desc: 'Three mock interviews to walk in genuinely ready.',
+    price: '₹2,499',
+    duration: '3 sessions',
+    tag: 'Best value',
+  },
+  {
+    id: 'priority-mocks',
+    name: 'Priority Mocks + Guidance',
+    desc: 'Three priority sessions blending mock interviews and guidance, scheduled fast.',
+    price: '₹3,399',
+    duration: '3 sessions',
+    tag: 'Most support',
   },
 ];
 
-/* ---- testimonial — in Disha's own voice (no fabricated client quote).
-   Replace with a real, consented, anonymised client reflection at M6. ---- */
+/* ---- testimonial — in Disha's own voice (no fabricated client quote) ---- */
 export const testimonial = {
   quote:
     'However you arrive — barely holding on, or just needing to be heard — my hope is the same: that you leave each session breathing a little easier than you came.',
@@ -231,9 +262,9 @@ export const faqs: Faq[] = [
 export const footer = {
   tagline: practitioner.role,
   explore: [
-    { label: 'About', href: '#about' },
-    { label: 'Sessions', href: '#sessions' },
-    { label: 'Mentoring', href: '#mentoring' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'About', href: '/#about' },
+    { label: 'Sessions', href: '/#sessions' },
+    { label: 'Mentoring', href: '/mentoring' },
+    { label: 'FAQ', href: '/#faq' },
   ] as NavLink[],
 };
