@@ -1,0 +1,92 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { social } from '../data/site';
+const email = social.email || 'hello@jaindisha.in';
+---
+
+<Legal
+  title="Terms & Conditions"
+  updated="8 June 2026"
+  description="The terms for booking counselling and psychology mentoring with Disha Jain via jaindisha.in."
+>
+  <p class="note">
+    <strong>Draft for review.</strong> These are starter terms. Disha should review them
+    (ideally with a professional) and confirm the <span class="todo">[bracketed]</span> details
+    before launch.
+  </p>
+
+  <p>
+    These terms apply when you book or use counselling or psychology mentoring services from
+    <strong>Disha Jain</strong> ("I", "me") through <strong>jaindisha.in</strong>. By booking a
+    session, you agree to them.
+  </p>
+
+  <p class="note crisis">
+    <strong>This is not a crisis or emergency service.</strong> If you or someone else is in
+    danger or thinking about self-harm, please contact emergency services on <strong>112</strong>
+    or the Tele-MANAS mental health helpline on <strong>14416</strong> (toll-free, in India).
+    Counselling sessions here are not a substitute for emergency or psychiatric care.
+  </p>
+
+  <h2>About me and my scope</h2>
+  <p>
+    I am a <strong>PsyD trainee and practising counsellor</strong>, currently training at NIEPVD,
+    Dehradun, with 7+ years in the field. I am <strong>not a licensed psychologist</strong> and I
+    do not diagnose or prescribe. I work within my scope of practice and will gently refer you on
+    if another professional would serve you better.
+  </p>
+
+  <h2>The services</h2>
+  <ul>
+    <li><strong>Counselling sessions</strong>, held one to one and online over video.</li>
+    <li><strong>Psychology mentoring</strong> for students and early-career psychologists, including guidance and mock interviews.</li>
+  </ul>
+  <p>Session lengths, formats, and prices are shown on the site at the time you book.</p>
+
+  <h2>Booking and payment</h2>
+  <p>
+    Sessions are booked and paid for in advance through this site. Once payment
+    is confirmed, your slot is held and you receive a confirmation by email. You are responsible
+    for giving accurate contact details and for joining from a private, quiet space with a stable
+    connection.
+  </p>
+
+  <h2>Rescheduling, cancellations and refunds</h2>
+  <p>
+    These are covered in the <a href="/refund">Refund &amp; Cancellation Policy</a>.
+  </p>
+
+  <h2>Confidentiality and your data</h2>
+  <p>
+    What you share with me stays confidential, within the standard ethical and legal limits I will
+    explain at the start of our work. How I handle your personal data is set out in the
+    <a href="/privacy">Privacy Policy</a>.
+  </p>
+
+  <h2>Eligibility</h2>
+  <p>
+    Counselling is intended for adults aged 18 and over. <span class="todo">[Disha to confirm
+    whether minors are seen, and if so, that a parent or guardian must consent.]</span>
+  </p>
+
+  <h2>What counselling can and cannot do</h2>
+  <p>
+    Counselling is a collaborative process. I bring care, training and honest effort, but I cannot
+    guarantee a particular outcome. Nothing on this site is medical advice, diagnosis or treatment.
+  </p>
+
+  <h2>Governing law</h2>
+  <p>
+    These terms are governed by the laws of India, and any disputes fall under the jurisdiction of
+    the courts in Dehradun, Uttarakhand.
+  </p>
+
+  <h2>Changes</h2>
+  <p>I may update these terms from time to time. The latest version always lives on this page.</p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about these terms? Email me at <a href={`mailto:${email}`}>{email}</a>.
+    <span class="todo">[Confirm this mailbox is set up.]</span>
+  </p>
+</Legal>

@@ -1,0 +1,80 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { social } from '../data/site';
+const email = social.email || 'hello@jaindisha.in';
+---
+
+<Legal
+  title="Privacy Policy"
+  updated="8 June 2026"
+  description="How Disha Jain collects, uses and protects your personal data on jaindisha.in."
+>
+  <p class="note">
+    <strong>Draft for review.</strong> Confirm the <span class="todo">[bracketed]</span> details
+    and have this reviewed before launch. It is written to align with India's Digital Personal
+    Data Protection Act, 2023.
+  </p>
+
+  <p>
+    This policy explains what personal data I collect when you use <strong>jaindisha.in</strong> or
+    book a session, and how I use and protect it. I am the data fiduciary: <strong>Disha Jain</strong>,
+    Dehradun, India.
+  </p>
+
+  <h2>What I collect</h2>
+  <ul>
+    <li><strong>Booking details</strong>: your name, email, phone number, and anything you choose to share in the intake form.</li>
+    <li><strong>Session information</strong>: brief notes I keep to support our work together.</li>
+    <li><strong>Payment information</strong>: handled by my payment provider. I receive a confirmation and reference, not your full card or bank details.</li>
+    <li><strong>Basic technical data</strong>: standard logs and, if enabled, privacy-friendly analytics.</li>
+  </ul>
+
+  <h2>How I use it</h2>
+  <ul>
+    <li>To schedule, hold and deliver your sessions.</li>
+    <li>To communicate with you about your bookings.</li>
+    <li>To take payment and issue confirmations.</li>
+    <li>To meet legal and ethical record-keeping obligations.</li>
+  </ul>
+  <p>I do not sell your data, and I do not use it for advertising.</p>
+
+  <h2>Who processes your data</h2>
+  <p>A few trusted services help run the practice. Each handles only what it needs:</p>
+  <ul>
+    <li><strong>Razorpay</strong> for payments.</li>
+    <li><strong>Cal.com</strong> for scheduling.</li>
+    <li><strong>Google Firebase</strong> for secure booking storage.</li>
+    <li><strong>Netlify</strong> for hosting the website.</li>
+  </ul>
+
+  <h2>Confidentiality</h2>
+  <p>
+    What you share in sessions is treated as confidential, within the ethical and legal limits I
+    explain at the start of our work (for example, where there is a serious risk of harm).
+  </p>
+
+  <h2>Storage, retention and security</h2>
+  <p>
+    Your data is stored securely with access limited to me. I keep it only as long as needed for
+    our work and to meet legal obligations, then delete it. <span class="todo">[Disha to confirm a
+    retention period, e.g. records kept for X years.]</span>
+  </p>
+
+  <h2>Your rights</h2>
+  <p>
+    You can ask to access, correct or delete your personal data, or withdraw consent, by emailing
+    me. I will respond within a reasonable time.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    The site is intended for adults. <span class="todo">[Confirm policy on minors and parental
+    consent, consistent with the Terms.]</span>
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    For any privacy question or request, email <a href={`mailto:${email}`}>{email}</a>.
+    <span class="todo">[Confirm this mailbox is set up.]</span>
+  </p>
+</Legal>

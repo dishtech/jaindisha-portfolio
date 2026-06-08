@@ -1,0 +1,47 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { social, practitioner } from '../data/site';
+const email = social.email || 'hello@jaindisha.in';
+---
+
+<Legal
+  title="Contact"
+  updated="8 June 2026"
+  description="How to reach Disha Jain for counselling, mentoring, bookings and any questions."
+>
+  <p class="note">
+    <strong>Needs your details.</strong> Razorpay activation requires a real, working email (and
+    usually a phone and address). Confirm the <span class="todo">[bracketed]</span> items.
+  </p>
+
+  <p>
+    The easiest way to start is to book a session from the site. For anything else, here is how to
+    reach me.
+  </p>
+
+  <h2>Email</h2>
+  <p>
+    <a href={`mailto:${email}`}>{email}</a> <span class="todo">[Confirm this mailbox is set up at
+    Hostinger.]</span> I usually reply within one to two working days.
+  </p>
+
+  <h2>Phone</h2>
+  <p><span class="todo">[Add a contact phone number if you want one shown, e.g. for Razorpay.]</span></p>
+
+  <h2>Where I work from</h2>
+  <p>
+    {practitioner.location}. <span class="todo">[Add a full address if required for Razorpay /
+    business verification.]</span>
+  </p>
+
+  <h2>Find me elsewhere</h2>
+  <ul>
+    <li><a href={social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+  </ul>
+
+  <p class="note crisis">
+    <strong>In a crisis?</strong> I am not an emergency service. If you or someone else is in
+    danger, call <strong>112</strong>, or the Tele-MANAS mental health helpline on
+    <strong>14416</strong> (toll-free, in India).
+  </p>
+</Legal>

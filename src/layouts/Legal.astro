@@ -1,0 +1,83 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  updated: string;
+  description?: string;
+}
+const { title, updated, description } = Astro.props;
+---
+
+<Base title={`${title} · Disha Jain`} description={description}>
+  <Nav />
+  <main class="wrap legal">
+    <p class="kicker">Legal</p>
+    <h1>{title}</h1>
+    <p class="updated">Last updated {updated}</p>
+    <div class="prose"><slot /></div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal {
+    max-width: 780px;
+    padding: clamp(40px, 6vw, 72px) 32px clamp(48px, 7vw, 80px);
+  }
+  .legal h1 {
+    font-size: clamp(30px, 4.2vw, 50px);
+    margin: 10px 0 6px;
+  }
+  .updated {
+    font-size: 13px;
+    color: var(--sage-dk);
+    margin-bottom: 30px;
+  }
+  /* slotted content is page-scoped, so target it globally */
+  .prose :global(h2) {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 600;
+    margin: 32px 0 10px;
+  }
+  .prose :global(p),
+  .prose :global(li) {
+    font-size: 15px;
+    color: var(--body);
+    line-height: 1.7;
+    margin: 9px 0;
+  }
+  .prose :global(ul) {
+    padding-left: 22px;
+    margin: 9px 0;
+  }
+  .prose :global(strong) {
+    color: var(--ink);
+  }
+  .prose :global(a) {
+    color: var(--clay);
+  }
+  .prose :global(.note) {
+    background: var(--cream2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--clay);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .prose :global(.note.crisis) {
+    border-left-color: var(--sage);
+  }
+  .prose :global(.todo) {
+    color: var(--clay-dk);
+    background: rgba(168, 93, 66, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+</style>
