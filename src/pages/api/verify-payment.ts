@@ -2,7 +2,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { verifyPaymentSignature } from '../../lib/razorpay';
 import { getBooking, confirmBooking, markFailed } from '../../lib/bookings';
-import { getSession } from '../../data/sessions';
+import { getOffering } from '../../lib/offerings';
 import { createBooking, isCalConfigured } from '../../lib/cal';
 
 const json = (body: unknown, status = 200) =>
@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ request }) => {
   const booking = await getBooking(razorpay_order_id);
   if (!booking) return json({ ok: false, error: 'Booking not found' }, 404);
 
-  const session = getSession(booking.sessionType);
+  const session = await getOffering(booking.sessionType);
 
   // 2. Payment is genuine. Create the Cal.com booking, then finalize Firestore.
   try {

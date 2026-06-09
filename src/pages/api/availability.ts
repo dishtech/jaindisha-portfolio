@@ -1,6 +1,6 @@
 export const prerender = false;
 import type { APIRoute } from 'astro';
-import { getSession } from '../../data/sessions';
+import { getOffering } from '../../lib/offerings';
 import { getSlots, isCalConfigured } from '../../lib/cal';
 
 const json = (body: unknown, status = 200) =>
@@ -8,7 +8,7 @@ const json = (body: unknown, status = 200) =>
 
 export const GET: APIRoute = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId') ?? '';
-  const session = getSession(sessionId);
+  const session = await getOffering(sessionId);
   if (!session) return json({ error: 'Unknown session' }, 400);
 
   // Booking not wired up yet (no Cal.com key, or this session has no event type).

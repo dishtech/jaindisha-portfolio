@@ -3,7 +3,7 @@ export const prerender = false;
 import Base from '../../layouts/Base.astro';
 import { getAdmin } from '../../lib/requireAdmin';
 import { listBookings } from '../../lib/bookings';
-import { getSession } from '../../data/sessions';
+import { getOfferings } from '../../lib/offerings';
 import { canSeeEarnings, canManageUsers, listAdmins, type Role } from '../../lib/roles';
 
 const admin = await getAdmin(Astro.cookies);
@@ -49,7 +49,8 @@ const fmt = new Intl.DateTimeFormat('en-IN', {
   day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata',
 });
 const when = (iso?: string) => (iso ? fmt.format(new Date(iso)) : '—');
-const sessName = (id?: string) => getSession(id || '')?.name || id || '—';
+const offMap = new Map((await getOfferings()).map((o) => [o.id, o.name]));
+const sessName = (id?: string) => offMap.get(id || '') || id || '—';
 const rupees = (p?: number) => (p ? `₹${(p / 100).toLocaleString('en-IN')}` : '—');
 const ROLE_LABEL: Record<Role, string> = { owner: 'Owner', 'super-admin': 'Super-admin', admin: 'Admin' };
 const cols = showEarnings ? 5 : 4;
@@ -64,6 +65,7 @@ const cols = showEarnings ? 5 : 4;
       </div>
       <div class="admin-actions">
         <a class="pill ghost" href="/">View site &nearr;</a>
+        <a class="pill ghost" href="/admin/offerings">Sessions &amp; pricing</a>
         <a class="pill ghost" href="https://app.cal.com/availability" target="_blank" rel="noopener noreferrer">Availability &nearr;</a>
         <a class="pill ghost" href="https://app.cal.com/event-types" target="_blank" rel="noopener noreferrer">Event types &nearr;</a>
         <form method="POST" action="/api/session-logout"><button class="pill ghost" type="submit">Log out</button></form>
@@ -139,27 +141,8 @@ const cols = showEarnings ? 5 : 4;
 <script>
   const panel = document.getElementById('team-panel');
   if (panel) {
-    const me = (panel as HTMLElement).dataset.me || '';
-    const tbody = panel.querySelector('#team-rows') as HTMLElement;
     const form = panel.querySelector('#team-add') as HTMLFormElement;
     const err = panel.querySelector('.team-err') as HTMLElement;
-    const LABEL: Record<string, string> = { owner: 'Owner', 'super-admin': 'Super-admin', admin: 'Admin' };
-    const esc = (s: string) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
-
-    function render(admins: any[]) {
-      tbody.innerHTML = admins
-        .map((a) => {
-          const tag = a.root ? '<span class="ttag">Owner</span>' : a.email === me ? '<span class="ttag">You</span>' : '';
-          const removable = !a.root && a.email !== me;
-          return `<tr><td>${esc(a.email)}${tag}</td><td><span class="rbadge r-${a.role}">${LABEL[a.role] || a.role}</span></td><td>${
-            removable ? `<button class="t-remove" data-email="${esc(a.email)}" type="button">Remove</button>` : ''
-          }</td></tr>`;
-        })
-        .join('');
-      tbody.querySelectorAll('.t-remove').forEach((b) =>
-        b.addEventListener('click', () => remove((b as HTMLElement).dataset.email || ''))
-      );
-    }
 
     async function post(payload: any) {
       const r = await fetch('/api/admin/team', {
@@ -172,34 +155,34 @@ const cols = showEarnings ? 5 : 4;
       return d;
     }
 
+    function fail(ex: any) {
+      err.textContent = ex?.message || 'Something went wrong.';
+      err.hidden = false;
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       err.hidden = true;
       try {
-        const d = await post({ action: 'add', email: (form.email as any).value.trim(), role: (form.role as any).value });
-        render(d.admins);
-        form.reset();
-      } catch (ex: any) {
-        err.textContent = ex.message;
-        err.hidden = false;
+        await post({ action: 'add', email: (form.email as any).value.trim(), role: (form.role as any).value });
+        location.reload(); // server re-renders the list with correct (scoped) styling
+      } catch (ex) {
+        fail(ex);
       }
     });
 
-    async function remove(email: string) {
-      if (!email || !confirm(`Remove ${email}?`)) return;
-      err.hidden = true;
-      try {
-        const d = await post({ action: 'remove', email });
-        render(d.admins);
-      } catch (ex: any) {
-        err.textContent = ex.message;
-        err.hidden = false;
-      }
-    }
-
-    // wire the server-rendered remove buttons
-    tbody.querySelectorAll('.t-remove').forEach((b) =>
-      b.addEventListener('click', () => remove((b as HTMLElement).dataset.email || ''))
+    panel.querySelectorAll<HTMLElement>('.t-remove').forEach((b) =>
+      b.addEventListener('click', async () => {
+        const email = b.dataset.email;
+        if (!email || !confirm(`Remove ${email}?`)) return;
+        err.hidden = true;
+        try {
+          await post({ action: 'remove', email });
+          location.reload();
+        } catch (ex) {
+          fail(ex);
+        }
+      })
     );
   }
 </script>

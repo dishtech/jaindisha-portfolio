@@ -13,7 +13,7 @@ export type BookingStatus = 'created' | 'scheduled' | 'completed' | 'cancelled' 
 
 export interface PendingBooking {
   orderId: string;
-  sessionType: string; // a key in src/data/sessions.ts
+  sessionType: string; // an offering id (see src/lib/offerings.ts)
   amountPaise: number; // priced server-side, never from the client
   clientName: string;
   clientEmail: string;

@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
@@ -13,6 +14,18 @@ import FinalCta from '../components/FinalCta.astro';
 import Footer from '../components/Footer.astro';
 import BookingModal from '../components/BookingModal.astro';
 import { social } from '../data/site';
+import { getOfferings, activeByArm, priceLabel } from '../lib/offerings';
+
+// Server-rendered so pricing reflects admin edits live; edge-cached so it stays fast and
+// Firestore is read at most ~once per window. Edits propagate within ~30s.
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=30, stale-while-revalidate=86400');
+
+const offerings = await getOfferings();
+const counselling = activeByArm(offerings, 'counselling');
+const amounts = offerings.filter((o) => o.active && o.amountPaise > 0).map((o) => o.amountPaise);
+const priceRange = amounts.length
+  ? `${priceLabel(Math.min(...amounts))}-${priceLabel(Math.max(...amounts))}`
+  : '₹599-₹3,399';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -23,7 +36,7 @@ const schema = {
   description:
     'Warm, one-to-one online counselling and psychology mentoring with Disha Jain, a PsyD trainee and counsellor with 7+ years of experience.',
   areaServed: 'IN',
-  priceRange: '₹599-₹3,399',
+  priceRange,
   founder: {
     '@type': 'Person',
     name: 'Disha Jain',
@@ -41,7 +54,7 @@ const schema = {
   <Feelings />
   <About />
   <HowIWork />
-  <Sessions />
+  <Sessions sessions={counselling} />
   <Mentoring />
   <Testimonial />
   <Faq />

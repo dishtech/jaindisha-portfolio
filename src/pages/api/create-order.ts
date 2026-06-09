@@ -1,7 +1,7 @@
 export const prerender = false;
 import type { APIRoute } from 'astro';
 import { randomUUID } from 'node:crypto';
-import { getSession } from '../../data/sessions';
+import { getOffering } from '../../lib/offerings';
 import { createOrder, isRazorpayConfigured, razorpayKeyId } from '../../lib/razorpay';
 import { createPendingBooking } from '../../lib/bookings';
 
@@ -19,7 +19,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const { sessionId, slotStart, name, email, phone, note } = body ?? {};
-  const session = getSession(sessionId);
+  const session = await getOffering(sessionId);
   if (!session) return json({ error: 'Unknown session' }, 400);
   if (!slotStart || !name || !email) return json({ error: 'Missing details' }, 400);
 

@@ -1,9 +1,14 @@
 ---
+export const prerender = false;
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import BookingModal from '../components/BookingModal.astro';
-import { mentoring, mentoringAbout } from '../data/site';
+import { mentoringAbout } from '../data/site';
+import { getOfferings, activeByArm, priceLabel } from '../lib/offerings';
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=30, stale-while-revalidate=86400');
+const mentoring = activeByArm(await getOfferings(), 'mentoring');
 
 const title = 'Mentoring for aspiring psychologists · Disha Jain';
 const description =
@@ -50,11 +55,16 @@ const description =
                 {o.tag && <span class="otag">{o.tag}</span>}
                 <h3 class="serif">{o.name}</h3>
                 <p class="odesc">{o.desc}</p>
+                {o.features.length > 0 && (
+                  <ul class="ofeats">
+                    {o.features.map((f) => <li>{f}</li>)}
+                  </ul>
+                )}
                 <div class="ometa">
-                  <span class="oprice">{o.price}</span>
-                  <span class="odur">{o.duration}</span>
+                  <span class="oprice">{priceLabel(o.amountPaise)}</span>
+                  <span class="odur">{o.durationLabel}</span>
                 </div>
-                <button type="button" class="pill solid obook" data-book={o.id} data-book-name={o.name} data-book-price={o.price} data-book-duration={o.duration}>
+                <button type="button" class="pill solid obook" data-book={o.id} data-book-name={o.name} data-book-price={priceLabel(o.amountPaise)} data-book-duration={o.durationLabel}>
                   Book <span class="ar">&rarr;</span>
                 </button>
               </div>
@@ -189,13 +199,38 @@ const description =
   }
   .odesc {
     font-size: 14px;
-    margin: 10px 0 20px;
-    flex: 1;
+    margin: 10px 0 18px;
+  }
+  .ofeats {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .ofeats li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .ofeats li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sage);
   }
   .ometa {
     display: flex;
     align-items: baseline;
     gap: 10px;
+    margin-top: auto;
     margin-bottom: 20px;
   }
   .oprice {

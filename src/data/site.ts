@@ -5,7 +5,8 @@
  *   1. Never "Dr." and never imply licensure. She is a PsyD *trainee* and counsellor.
  *   2. No fabricated client testimonial. The quote below is in her own voice.
  *
- * Prices/packages match the server price source in src/data/sessions.ts (paise).
+ * Session/mentoring pricing, duration & features are admin-editable and live in Firestore;
+ * see src/lib/offerings.ts (this file holds the rest of the site copy).
  */
 
 export interface NavLink {
@@ -23,26 +24,6 @@ export interface Step {
   n: string;
   title: string;
   body: string;
-}
-
-export interface SessionType {
-  id: string;
-  name: string;
-  desc: string;
-  price: string; // display, e.g. "₹999"
-  amountPaise: number; // server-side seed for M2 (₹999 -> 99900)
-  duration: string;
-  featured?: boolean;
-  badge?: string;
-}
-
-export interface MentoringOffer {
-  id: string;
-  name: string;
-  desc: string;
-  price: string;
-  duration: string;
-  tag?: string; // e.g. "Best value"
 }
 
 export interface Faq {
@@ -143,29 +124,7 @@ export const steps: Step[] = [
   },
 ];
 
-/* ---- counselling sessions (bookable; primary path) ---- */
-export const sessions: SessionType[] = [
-  {
-    id: 'counselling',
-    name: 'Counselling Session',
-    desc: 'A warm 40 minutes to talk, be heard, and find your footing again.',
-    price: '₹999',
-    amountPaise: 99900,
-    duration: '40 minutes · online',
-    featured: true,
-    badge: 'Most chosen',
-  },
-  {
-    id: 'priority',
-    name: 'Priority Support',
-    desc: 'When you need to be seen sooner. Priority scheduling for the pressing moments.',
-    price: '₹1,299',
-    amountPaise: 129900,
-    duration: '40 minutes · online',
-  },
-];
-
-/* ---- mentoring (secondary path; shown in full on /mentoring). ids match sessions.ts keys ---- */
+/* ---- mentoring intro / credibility (the offers themselves live in offerings.ts) ---- */
 export const mentoringAbout = {
   intro:
     "I'm Disha, a PsyD trainee at NIEPVD, Dehradun. I mentor psychology students and early-career psychologists through the path I once walked myself: entrance prep, mock interviews, and finding your footing in the field.",
@@ -180,46 +139,6 @@ export const mentoringAbout = {
     '7+ years',
   ],
 };
-
-export const mentoring: MentoringOffer[] = [
-  {
-    id: 'mentoring-intro',
-    name: 'Introductory Psych Guidance',
-    desc: 'A short, low-pressure first chat to point you in the right direction.',
-    price: '₹599',
-    duration: '20 minutes',
-  },
-  {
-    id: 'mentoring-student',
-    name: 'Psychology Student Guidance',
-    desc: 'Course choices, career direction, and the road ahead, from someone a few steps in front of you.',
-    price: '₹999',
-    duration: '40 minutes',
-  },
-  {
-    id: 'mentoring-mock',
-    name: 'Mock Interview · Entrance Prep',
-    desc: 'A realistic practice interview with honest, specific feedback for psychology entrances.',
-    price: '₹999',
-    duration: '40 minutes',
-  },
-  {
-    id: 'mentoring-mock-series',
-    name: 'Mock Interview Series',
-    desc: 'Three mock interviews so you walk in genuinely ready.',
-    price: '₹2,499',
-    duration: '3 sessions',
-    tag: 'Best value',
-  },
-  {
-    id: 'mentoring-priority-mocks',
-    name: 'Priority Mocks + Guidance',
-    desc: 'Three priority sessions blending mock interviews and guidance, scheduled fast.',
-    price: '₹3,399',
-    duration: '3 sessions',
-    tag: 'Most support',
-  },
-];
 
 /* ---- testimonial, in Disha's own voice (no fabricated client quote) ---- */
 export const testimonial = {

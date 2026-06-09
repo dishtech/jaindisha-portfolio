@@ -1,5 +1,10 @@
 ---
-import { sessions } from '../data/site';
+import { priceLabel, type Offering } from '../lib/offerings';
+
+interface Props {
+  sessions: Offering[];
+}
+const { sessions } = Astro.props;
 ---
 
 <section id="sessions">
@@ -16,9 +21,14 @@ import { sessions } from '../data/site';
             {s.badge && <span class="badge">{s.badge}</span>}
             <h3 class="serif">{s.name}</h3>
             <p class="sdesc">{s.desc}</p>
-            <div class="price">{s.price}</div>
-            <div class="per">{s.duration}</div>
-            <button type="button" class="pill solid" data-book={s.id} data-book-name={s.name} data-book-price={s.price} data-book-duration={s.duration}>
+            <div class="price">{priceLabel(s.amountPaise)}</div>
+            <div class="per">{s.durationLabel}</div>
+            {s.features.length > 0 && (
+              <ul class="feats">
+                {s.features.map((f) => <li>{f}</li>)}
+              </ul>
+            )}
+            <button type="button" class="pill solid" data-book={s.id} data-book-name={s.name} data-book-price={priceLabel(s.amountPaise)} data-book-duration={s.durationLabel}>
               Book &amp; pay <span class="ar">&rarr;</span>
             </button>
           </div>
@@ -106,6 +116,37 @@ import { sessions } from '../data/site';
   }
   .scard.feat .per {
     color: #d8c6ad;
+  }
+  .feats {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .feats li {
+    position: relative;
+    padding-left: 22px;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .feats li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sage);
+  }
+  .scard.feat .feats li {
+    color: #e0d2bf;
+  }
+  .scard.feat .feats li::before {
+    background: var(--sand);
   }
   .scard .pill {
     margin-top: auto;
