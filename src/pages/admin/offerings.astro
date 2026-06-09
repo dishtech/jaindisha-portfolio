@@ -1,0 +1,195 @@
+---
+export const prerender = false;
+import Base from '../../layouts/Base.astro';
+import { getAdmin } from '../../lib/requireAdmin';
+import { listAllOfferings, type Offering } from '../../lib/offerings';
+
+const admin = await getAdmin(Astro.cookies);
+if (!admin) return Astro.redirect('/admin/login');
+
+const offerings = await listAllOfferings();
+const rupees = (p: number) => String(Math.round((p || 0) / 100));
+const groups: { label: string; arm: 'counselling' | 'mentoring'; list: Offering[] }[] = [
+  { label: 'Counselling & therapy', arm: 'counselling', list: offerings.filter((o) => o.arm === 'counselling') },
+  { label: 'Mentoring', arm: 'mentoring', list: offerings.filter((o) => o.arm === 'mentoring') },
+];
+---
+
+<Base title="Sessions & pricing · Admin" description="Edit sessions, pricing and features.">
+  <main class="wrap admin">
+    <div class="admin-head">
+      <div>
+        <p class="kicker">Admin</p>
+        <h1 class="serif">Sessions &amp; pricing</h1>
+      </div>
+      <div class="admin-actions">
+        <a class="pill ghost" href="/admin">&larr; Dashboard</a>
+        <a class="pill ghost" href="/" target="_blank" rel="noopener noreferrer">View site &nearr;</a>
+      </div>
+    </div>
+
+    <p class="hint">Edit prices, durations and features below — changes go live within ~30 seconds. The price you set is exactly what clients are charged. To make a session bookable, paste its Cal.com event-type id.</p>
+
+    {groups.map((g) => (
+      <section class="arm">
+        <h2 class="serif arm-title">{g.label}</h2>
+        <div class="o-list">
+          {g.list.map((o) => (
+            <form class="oedit" data-id={o.id} data-arm={o.arm}>
+              <div class="oedit-top">
+                <input class="o-name" name="name" value={o.name} placeholder="Session name" />
+                <label class="chk"><input type="checkbox" name="active" checked={o.active} /> Active</label>
+              </div>
+              <div class="o-grid">
+                <label>Price (₹)<input type="number" name="priceRupees" min="0" step="1" value={rupees(o.amountPaise)} /></label>
+                <label>Duration<input name="durationLabel" value={o.durationLabel} placeholder="40 minutes · online" /></label>
+                <label>Cal.com event id<input name="calEventTypeId" value={o.calEventTypeId ?? ''} placeholder="optional" /></label>
+                <label>Order<input type="number" name="order" value={o.order} /></label>
+                {o.arm === 'counselling' ? (
+                  <label>Badge<input name="badge" value={o.badge ?? ''} placeholder="e.g. Most chosen" /></label>
+                ) : (
+                  <label>Tag<input name="tag" value={o.tag ?? ''} placeholder="e.g. Best value" /></label>
+                )}
+                {o.arm === 'counselling' && (
+                  <label class="chk feat"><input type="checkbox" name="featured" checked={!!o.featured} /> Featured</label>
+                )}
+              </div>
+              <label class="o-block">Description<textarea name="desc" rows="2">{o.desc}</textarea></label>
+              <label class="o-block">Features (one per line)<textarea name="features" rows="3">{o.features.join('\n')}</textarea></label>
+              <div class="oedit-actions">
+                <button type="submit" class="pill solid">Save</button>
+                <button type="button" class="o-del">Delete</button>
+                <span class="o-status" hidden></span>
+                <span class="o-id">id: {o.id}</span>
+              </div>
+            </form>
+          ))}
+        </div>
+
+        <form class="o-add" data-arm={g.arm}>
+          <input name="id" placeholder="new-id (lowercase-hyphen)" autocomplete="off" />
+          <input name="name" placeholder="Name" />
+          <input type="number" name="priceRupees" min="0" placeholder="Price ₹" />
+          <input name="durationLabel" placeholder="Duration" />
+          <button type="submit" class="pill ghost">Add {g.arm === 'counselling' ? 'session' : 'package'}</button>
+        </form>
+      </section>
+    ))}
+  </main>
+</Base>
+
+<script>
+  function collect(form: HTMLFormElement) {
+    const fd = new FormData(form);
+    const id = (form.dataset.id || String(fd.get('id') || '')).trim().toLowerCase();
+    const cal = String(fd.get('calEventTypeId') || '').trim();
+    return {
+      id,
+      arm: form.dataset.arm,
+      name: String(fd.get('name') || '').trim(),
+      amountPaise: Math.round((Number(fd.get('priceRupees')) || 0) * 100),
+      durationLabel: String(fd.get('durationLabel') || '').trim(),
+      calEventTypeId: cal === '' ? null : cal,
+      order: Number(fd.get('order')) || 0,
+      badge: fd.get('badge') ? String(fd.get('badge')).trim() : undefined,
+      tag: fd.get('tag') ? String(fd.get('tag')).trim() : undefined,
+      featured: fd.get('featured') === 'on',
+      active: fd.get('active') === 'on',
+      features: String(fd.get('features') || '').split('\n').map((s) => s.trim()).filter(Boolean),
+    };
+  }
+
+  async function api(payload: any) {
+    const r = await fetch('/api/admin/offerings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Could not save.');
+    return d;
+  }
+
+  function flash(el: HTMLElement, msg: string, ok = true) {
+    el.textContent = msg;
+    el.hidden = false;
+    el.className = 'o-status ' + (ok ? 'ok' : 'err');
+    if (ok) setTimeout(() => { el.hidden = true; }, 2500);
+  }
+
+  document.querySelectorAll<HTMLFormElement>('.oedit').forEach((form) => {
+    const status = form.querySelector('.o-status') as HTMLElement;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await api({ action: 'save', offering: collect(form) });
+        flash(status, 'Saved ✓');
+      } catch (ex: any) {
+        flash(status, ex.message, false);
+      }
+    });
+    form.querySelector('.o-del')?.addEventListener('click', async () => {
+      const id = form.dataset.id;
+      if (!id || !confirm(`Delete "${id}"? It will be removed from the site.`)) return;
+      try {
+        await api({ action: 'delete', id });
+        form.remove();
+      } catch (ex: any) {
+        flash(status, ex.message, false);
+      }
+    });
+  });
+
+  document.querySelectorAll<HTMLFormElement>('.o-add').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const offering = collect(form);
+      if (!offering.id) { alert('Please enter an id (lowercase-with-hyphens).'); return; }
+      offering.active = true;
+      offering.order = 999;
+      offering.features = [];
+      try {
+        await api({ action: 'save', offering });
+        location.reload();
+      } catch (ex: any) {
+        alert(ex.message);
+      }
+    });
+  });
+</script>
+
+<style>
+  .admin { padding: clamp(36px, 6vw, 64px) 32px 80px; max-width: 920px; }
+  .admin-head { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 14px; flex-wrap: wrap; }
+  .admin-head h1 { font-size: clamp(28px, 4vw, 42px); margin-top: 4px; }
+  .admin-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .admin-actions .pill { font-size: 13px; padding: 9px 16px; }
+  .hint { font-size: 14px; color: var(--body); max-width: 70ch; margin-bottom: 30px; }
+  .arm { margin-bottom: 44px; }
+  .arm-title { font-size: clamp(20px, 3vw, 28px); color: var(--ink); margin-bottom: 16px; }
+  .o-list { display: flex; flex-direction: column; gap: 18px; }
+  .oedit { background: var(--cream2); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; }
+  .oedit-top { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+  .o-name { flex: 1; font-family: var(--display); font-size: 19px; font-weight: 600; color: var(--ink); background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 13px; }
+  .chk { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .o-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .oedit label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: var(--sage-dk); letter-spacing: 0.02em; }
+  .chk.feat { flex-direction: row; align-self: end; padding-bottom: 9px; color: var(--ink); }
+  .oedit input, .oedit textarea { font-family: var(--sans); font-size: 14px; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font-weight: 400; }
+  .oedit input:focus, .oedit textarea:focus { outline: none; border-color: var(--clay); }
+  .o-block { margin-bottom: 14px; }
+  .oedit textarea { resize: vertical; }
+  .oedit-actions { display: flex; align-items: center; gap: 12px; }
+  .oedit-actions .pill { padding: 9px 22px; }
+  .o-del { background: none; border: 1px solid var(--line); color: var(--clay-dk); border-radius: 100px; padding: 8px 16px; font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .o-del:hover { background: var(--clay); color: #fff; border-color: var(--clay); }
+  .o-status { font-size: 13px; font-weight: 600; }
+  .o-status.ok { color: var(--sage-dk); }
+  .o-status.err { color: var(--clay-dk); }
+  .o-id { margin-left: auto; font-size: 11px; color: #a08e76; }
+  .o-add { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+  .o-add input { font-family: var(--sans); font-size: 13.5px; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+  .o-add input[name='id'], .o-add input[name='name'] { flex: 1 1 160px; }
+  .o-add input[type='number'] { width: 110px; }
+  .o-add .pill { padding: 9px 18px; }
+</style>
