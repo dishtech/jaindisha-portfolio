@@ -1,12 +1,16 @@
 /**
- * Firebase Admin SDK (server-side ONLY) — initialized once as a singleton.
+ * Firebase Admin SDK (server-side ONLY) — initialized LAZILY on first real use.
  *
  * Credentials come from EITHER:
  *   A) FIREBASE_SERVICE_ACCOUNT_B64  (base64 of the whole service-account JSON), OR
  *   B) FIREBASE_PROJECT_ID + FIREBASE_CLIENT_EMAIL + FIREBASE_PRIVATE_KEY (3 fields from the JSON)
  *
  * These are SECRETS. Never give them a PUBLIC_ prefix, and never import this into client code.
- * Only import from on-demand (prerender = false) routes, so it never runs at build time.
+ *
+ * Why lazy: `db`/`adminAuth` are Proxies that only initialize on first property access (e.g.
+ * db.collection(...)), NOT at import. So a module that merely imports `db` — like the SSR homepage
+ * via offerings.ts — won't crash at load when creds are absent. Callers that wrap usage in
+ * try/catch (getOfferings, listBookings, the auth guard) then degrade gracefully to fallbacks.
  */
 import { initializeApp, getApps, getApp, cert, type ServiceAccount } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
@@ -29,26 +33,36 @@ function serviceAccount(): ServiceAccount {
   );
 }
 
-// Build the SDK once and cache it on globalThis. Astro/Vite dev re-evaluates this module on HMR,
-// and db.settings() may be called only ONCE per Firestore instance — so guard it behind a cache
-// that survives re-evaluation (harmless and idempotent in production too).
-const globalForAdmin = globalThis as unknown as { __dishaAdmin?: { db: Firestore; auth: Auth } };
+interface Sdk {
+  db: Firestore;
+  auth: Auth;
+}
 
-const sdk =
-  globalForAdmin.__dishaAdmin ??
-  (() => {
-    const app = getApps().length ? getApp() : initializeApp({ credential: cert(serviceAccount()) });
-    const firestore = getFirestore(app);
-    try {
-      firestore.settings({ ignoreUndefinedProperties: true });
-    } catch {
-      // settings() throws if already applied to this Firestore instance (e.g. an HMR re-eval
-      // that reused an existing instance). The setting is already in effect, so this is safe.
-    }
-    return { db: firestore, auth: getAuth(app) };
-  })();
+/** Build (once) and cache the SDK on globalThis so it survives Astro/Vite HMR re-evaluation. */
+function sdk(): Sdk {
+  const g = globalThis as unknown as { __dishaAdmin?: Sdk };
+  if (g.__dishaAdmin) return g.__dishaAdmin;
+  const app = getApps().length ? getApp() : initializeApp({ credential: cert(serviceAccount()) });
+  const firestore = getFirestore(app);
+  try {
+    firestore.settings({ ignoreUndefinedProperties: true });
+  } catch {
+    // settings() throws if already applied to this instance (HMR reuse) — safe to ignore.
+  }
+  g.__dishaAdmin = { db: firestore, auth: getAuth(app) };
+  return g.__dishaAdmin;
+}
 
-globalForAdmin.__dishaAdmin = sdk;
+/** A Proxy that initializes the SDK only when a property is actually accessed. */
+function lazy<T extends object>(pick: (s: Sdk) => T): T {
+  return new Proxy({} as T, {
+    get(_target, prop) {
+      const real = pick(sdk()) as Record<string | symbol, unknown>;
+      const value = real[prop];
+      return typeof value === 'function' ? (value as (...a: unknown[]) => unknown).bind(real) : value;
+    },
+  });
+}
 
-export const db = sdk.db;
-export const adminAuth = sdk.auth;
+export const db: Firestore = lazy((s) => s.db);
+export const adminAuth: Auth = lazy((s) => s.auth);
