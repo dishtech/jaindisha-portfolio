@@ -48,10 +48,10 @@ if (manageUsers) {
 const fmt = new Intl.DateTimeFormat('en-IN', {
   day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata',
 });
-const when = (iso?: string) => (iso ? fmt.format(new Date(iso)) : '—');
+const when = (iso?: string) => (iso ? fmt.format(new Date(iso)) : '-');
 const offMap = new Map((await getOfferings()).map((o) => [o.id, o.name]));
-const sessName = (id?: string) => offMap.get(id || '') || id || '—';
-const rupees = (p?: number) => (p ? `₹${(p / 100).toLocaleString('en-IN')}` : '—');
+const sessName = (id?: string) => offMap.get(id || '') || id || '-';
+const rupees = (p?: number) => (p ? `₹${(p / 100).toLocaleString('en-IN')}` : '-');
 const ROLE_LABEL: Record<Role, string> = { owner: 'Owner', 'super-admin': 'Super-admin', admin: 'Admin' };
 const cols = showEarnings ? 5 : 4;
 ---
@@ -90,7 +90,7 @@ const cols = showEarnings ? 5 : 4;
           <tbody>
             {bookings.map((b) => (
               <tr>
-                <td>{b.clientName || '—'}<br /><span class="sub">{b.clientEmail || ''}</span></td>
+                <td>{b.clientName || '-'}<br /><span class="sub">{b.clientEmail || ''}</span></td>
                 <td>{sessName(b.sessionType)}</td>
                 <td>{when(b.slotStart)}</td>
                 <td><span class={`badge s-${b.status}`}>{b.status}</span></td>
@@ -106,7 +106,7 @@ const cols = showEarnings ? 5 : 4;
       <section id="team-panel" class="team" data-me={admin.email} data-owner={admin.email}>
         <div class="team-head">
           <h2 class="serif">Team access</h2>
-          <p class="team-sub">You're the owner — only you can add or remove people. Everyone signs in with Google.</p>
+          <p class="team-sub">You're the owner, so only you can add or remove people. Everyone signs in with Google.</p>
         </div>
 
         <form id="team-add" class="team-add">

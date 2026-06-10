@@ -59,7 +59,7 @@ export async function listAllOfferings(): Promise<Offering[]> {
 export async function saveOffering(input: Partial<Offering> & { id: string }): Promise<Offering> {
   const id = String(input.id || '').trim().toLowerCase();
   if (!id || !/^[a-z0-9][a-z0-9-]*$/.test(id)) {
-    throw new Error('Invalid id — use lowercase letters, numbers and hyphens.');
+    throw new Error('Invalid id. Use lowercase letters, numbers and hyphens.');
   }
   const calRaw = input.calEventTypeId as unknown;
   const calNum = calRaw === '' || calRaw == null ? NaN : Number(calRaw);
