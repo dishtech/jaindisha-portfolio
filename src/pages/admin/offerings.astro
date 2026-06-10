@@ -2,101 +2,268 @@
 export const prerender = false;
 import Base from '../../layouts/Base.astro';
 import { getAdmin } from '../../lib/requireAdmin';
-import { listAllOfferings, type Offering } from '../../lib/offerings';
+import { listAllOfferings } from '../../lib/offerings';
 
 const admin = await getAdmin(Astro.cookies);
 if (!admin) return Astro.redirect('/admin/login');
 
 const offerings = await listAllOfferings();
-const rupees = (p: number) => String(Math.round((p || 0) / 100));
-const groups: { label: string; arm: 'counselling' | 'mentoring'; list: Offering[] }[] = [
-  { label: 'Counselling & therapy', arm: 'counselling', list: offerings.filter((o) => o.arm === 'counselling') },
-  { label: 'Mentoring', arm: 'mentoring', list: offerings.filter((o) => o.arm === 'mentoring') },
-];
+// Embed for the client editor (escape </script> safely).
+const offeringsJson = JSON.stringify(offerings).replace(/</g, '\\u003c');
 ---
 
 <Base title="Sessions & pricing · Admin" description="Edit sessions, pricing and features.">
-  <main class="wrap admin">
-    <div class="admin-head">
+  <main class="wrap oadmin">
+    <div class="oa-head">
       <div>
         <p class="kicker">Admin</p>
         <h1 class="serif">Sessions &amp; pricing</h1>
       </div>
-      <div class="admin-actions">
+      <div class="oa-actions">
         <a class="pill ghost" href="/admin">&larr; Dashboard</a>
         <a class="pill ghost" href="/" target="_blank" rel="noopener noreferrer">View site &nearr;</a>
       </div>
     </div>
 
-    <p class="hint">Edit prices, durations and features below — changes go live within ~30 seconds. The price you set is exactly what clients are charged. To make a session bookable, paste its Cal.com event-type id.</p>
+    <p class="oa-hint">Pick a session to edit, or add a new one. Changes go live within ~30 seconds. The price you set is exactly what clients are charged.</p>
 
-    {groups.map((g) => (
-      <section class="arm">
-        <h2 class="serif arm-title">{g.label}</h2>
-        <div class="o-list">
-          {g.list.map((o) => (
-            <form class="oedit" data-id={o.id} data-arm={o.arm}>
-              <div class="oedit-top">
-                <input class="o-name" name="name" value={o.name} placeholder="Session name" />
-                <label class="chk"><input type="checkbox" name="active" checked={o.active} /> Active</label>
-              </div>
-              <div class="o-grid">
-                <label>Price (₹)<input type="number" name="priceRupees" min="0" step="1" value={rupees(o.amountPaise)} /></label>
-                <label>Duration<input name="durationLabel" value={o.durationLabel} placeholder="40 minutes · online" /></label>
-                <label>Cal.com event id<input name="calEventTypeId" value={o.calEventTypeId ?? ''} placeholder="optional" /></label>
-                <label>Order<input type="number" name="order" value={o.order} /></label>
-                {o.arm === 'counselling' ? (
-                  <label>Badge<input name="badge" value={o.badge ?? ''} placeholder="e.g. Most chosen" /></label>
-                ) : (
-                  <label>Tag<input name="tag" value={o.tag ?? ''} placeholder="e.g. Best value" /></label>
-                )}
-                {o.arm === 'counselling' && (
-                  <label class="chk feat"><input type="checkbox" name="featured" checked={!!o.featured} /> Featured</label>
-                )}
-              </div>
-              <label class="o-block">Description<textarea name="desc" rows="2">{o.desc}</textarea></label>
-              <label class="o-block">Features (one per line)<textarea name="features" rows="3">{o.features.join('\n')}</textarea></label>
-              <div class="oedit-actions">
-                <button type="submit" class="pill solid">Save</button>
-                <button type="button" class="o-del">Delete</button>
-                <span class="o-status" hidden></span>
-                <span class="o-id">id: {o.id}</span>
-              </div>
-            </form>
-          ))}
+    <div class="arm-tabs" role="tablist">
+      <button type="button" class="arm-tab is-on" data-arm="counselling">Counselling &amp; therapy</button>
+      <button type="button" class="arm-tab" data-arm="mentoring">Mentoring</button>
+    </div>
+
+    <label class="picker">
+      <span>Editing</span>
+      <select id="picker"></select>
+    </label>
+
+    <div class="editor-grid">
+      <!-- Live preview (top on mobile, sticky beside the form on desktop) -->
+      <aside class="pv-col">
+        <p class="pv-label">Live preview</p>
+        <div id="pv" class="pv">
+          <span class="pv-badge" hidden></span>
+          <h3 class="pv-name serif"></h3>
+          <p class="pv-desc"></p>
+          <ul class="pv-feats"></ul>
+          <div class="pv-price serif"></div>
+          <div class="pv-dur"></div>
+          <div class="pv-btn">Book &amp; pay <span>&rarr;</span></div>
+        </div>
+        <p class="pv-note">This is roughly how the card looks on your site.</p>
+      </aside>
+
+      <!-- Editor form -->
+      <form id="editor" class="ed-form" autocomplete="off">
+        <label class="ed-field new-only">
+          <span class="ed-label">URL id <em>(lowercase-with-hyphens, can't change later)</em></span>
+          <input name="id" placeholder="e.g. couples-therapy" />
+        </label>
+
+        <label class="ed-field">
+          <span class="ed-label">Name</span>
+          <input name="name" placeholder="e.g. Counselling Session" />
+        </label>
+
+        <div class="ed-row">
+          <label class="ed-field">
+            <span class="ed-label">Price (₹)</span>
+            <input name="priceRupees" type="number" inputmode="numeric" min="0" step="1" placeholder="999" />
+          </label>
+          <label class="ed-field">
+            <span class="ed-label">Duration</span>
+            <input name="durationLabel" placeholder="40 minutes · online" />
+          </label>
         </div>
 
-        <form class="o-add" data-arm={g.arm}>
-          <input name="id" placeholder="new-id (lowercase-hyphen)" autocomplete="off" />
-          <input name="name" placeholder="Name" />
-          <input type="number" name="priceRupees" min="0" placeholder="Price ₹" />
-          <input name="durationLabel" placeholder="Duration" />
-          <button type="submit" class="pill ghost">Add {g.arm === 'counselling' ? 'session' : 'package'}</button>
-        </form>
-      </section>
-    ))}
+        <label class="ed-field">
+          <span class="ed-label">Description</span>
+          <textarea name="desc" rows="2" placeholder="A warm sentence about this session, e.g. “A calm 40 minutes to talk, be heard, and find your footing.”"></textarea>
+        </label>
+
+        <label class="ed-field">
+          <span class="ed-label">Features <em>(one per line — leave blank for none)</em></span>
+          <textarea name="features" rows="3" placeholder={"One per line, e.g.\nGentle, judgement-free space\nFollow-up notes if you'd like"}></textarea>
+        </label>
+
+        <details class="ed-adv">
+          <summary>Advanced options</summary>
+          <div class="ed-adv-body">
+            <div class="ed-row">
+              <label class="ed-field cnsl-only">
+                <span class="ed-label">Badge <em>(corner pill)</em></span>
+                <input name="badge" placeholder="e.g. Most chosen" />
+              </label>
+              <label class="ed-field ment-only">
+                <span class="ed-label">Tag <em>(corner pill)</em></span>
+                <input name="tag" placeholder="e.g. Best value" />
+              </label>
+              <label class="ed-field">
+                <span class="ed-label">Cal.com event id <em>(makes it bookable)</em></span>
+                <input name="calEventTypeId" placeholder="e.g. 5936147" />
+              </label>
+            </div>
+            <div class="ed-row">
+              <label class="ed-field">
+                <span class="ed-label">Order <em>(lower shows first)</em></span>
+                <input name="order" type="number" inputmode="numeric" placeholder="1" />
+              </label>
+              <label class="ed-toggle cnsl-only">
+                <input type="checkbox" name="featured" /> <span>Featured (highlighted card)</span>
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <label class="ed-toggle active-row">
+          <input type="checkbox" name="active" /> <span>Active — visible &amp; bookable on the site</span>
+        </label>
+
+        <div class="ed-actions">
+          <button type="submit" class="pill solid">Save changes</button>
+          <button type="button" class="ed-del" hidden>Delete</button>
+          <span class="ed-status" hidden></span>
+        </div>
+      </form>
+    </div>
   </main>
+
+  <script type="application/json" id="offerings-json" set:html={offeringsJson}></script>
 </Base>
 
 <script>
-  function collect(form: HTMLFormElement) {
-    const fd = new FormData(form);
-    const id = (form.dataset.id || String(fd.get('id') || '')).trim().toLowerCase();
-    const cal = String(fd.get('calEventTypeId') || '').trim();
+  type Offering = {
+    id: string; arm: 'counselling' | 'mentoring'; name: string; desc: string;
+    amountPaise: number; durationLabel: string; features: string[];
+    calEventTypeId: number | null; badge?: string; tag?: string;
+    featured?: boolean; active: boolean; order: number;
+  };
+
+  const DATA: Offering[] = JSON.parse(document.getElementById('offerings-json')!.textContent || '[]');
+  const ADD = '__add__';
+  const state = { arm: 'counselling' as 'counselling' | 'mentoring', mode: 'edit' as 'edit' | 'new' };
+
+  const main = document.querySelector('.oadmin') as HTMLElement;
+  const form = document.getElementById('editor') as HTMLFormElement;
+  const picker = document.getElementById('picker') as HTMLSelectElement;
+  const status = form.querySelector('.ed-status') as HTMLElement;
+  const delBtn = form.querySelector('.ed-del') as HTMLButtonElement;
+  const pv = document.getElementById('pv') as HTMLElement;
+
+  const f = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+  const rupeeFmt = (paise: number) => `₹${Math.round((paise || 0) / 100).toLocaleString('en-IN')}`;
+  const slug = (s: string) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+  function armList(): Offering[] {
+    return DATA.filter((o) => o.arm === state.arm).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  function renderPicker(selectId?: string) {
+    const items = armList();
+    picker.innerHTML =
+      items.map((o) => `<option value="${o.id}">${o.name}${o.active ? '' : ' (hidden)'}</option>`).join('') +
+      `<option value="${ADD}">＋ Add a new ${state.arm === 'counselling' ? 'session' : 'package'}…</option>`;
+    picker.value = selectId && items.some((o) => o.id === selectId) ? selectId : items[0]?.id || ADD;
+    onPick();
+  }
+
+  function setArm(arm: 'counselling' | 'mentoring') {
+    state.arm = arm;
+    document.querySelectorAll('.arm-tab').forEach((t) =>
+      t.classList.toggle('is-on', (t as HTMLElement).dataset.arm === arm)
+    );
+    main.dataset.arm = arm;
+    renderPicker();
+  }
+
+  function loadOffering(o: Offering) {
+    state.mode = 'edit';
+    form.dataset.id = o.id;
+    (f('name') as HTMLInputElement).value = o.name || '';
+    (f('priceRupees') as HTMLInputElement).value = String(Math.round((o.amountPaise || 0) / 100));
+    (f('durationLabel') as HTMLInputElement).value = o.durationLabel || '';
+    (f('desc') as HTMLTextAreaElement).value = o.desc || '';
+    (f('features') as HTMLTextAreaElement).value = (o.features || []).join('\n');
+    (f('calEventTypeId') as HTMLInputElement).value = o.calEventTypeId == null ? '' : String(o.calEventTypeId);
+    (f('order') as HTMLInputElement).value = String(o.order ?? 0);
+    if (f('badge')) (f('badge') as HTMLInputElement).value = o.badge || '';
+    if (f('tag')) (f('tag') as HTMLInputElement).value = o.tag || '';
+    (f('featured') as HTMLInputElement).checked = !!o.featured;
+    (f('active') as HTMLInputElement).checked = o.active !== false;
+    delBtn.hidden = false;
+    syncMode();
+    updatePreview();
+  }
+
+  function blankForm() {
+    state.mode = 'new';
+    form.dataset.id = '';
+    form.reset();
+    (f('active') as HTMLInputElement).checked = true;
+    (f('order') as HTMLInputElement).value = String(armList().length + 1);
+    delBtn.hidden = true;
+    syncMode();
+    updatePreview();
+  }
+
+  function syncMode() {
+    main.dataset.mode = state.mode;
+  }
+
+  function onPick() {
+    if (picker.value === ADD) blankForm();
+    else {
+      const o = DATA.find((x) => x.id === picker.value);
+      if (o) loadOffering(o);
+    }
+  }
+
+  function readForm(): Offering {
+    const cal = (f('calEventTypeId') as HTMLInputElement).value.trim();
+    const id = state.mode === 'new' ? slug((f('id') as HTMLInputElement).value || (f('name') as HTMLInputElement).value) : form.dataset.id || '';
     return {
       id,
-      arm: form.dataset.arm,
-      name: String(fd.get('name') || '').trim(),
-      amountPaise: Math.round((Number(fd.get('priceRupees')) || 0) * 100),
-      durationLabel: String(fd.get('durationLabel') || '').trim(),
-      calEventTypeId: cal === '' ? null : cal,
-      order: Number(fd.get('order')) || 0,
-      badge: fd.get('badge') ? String(fd.get('badge')).trim() : undefined,
-      tag: fd.get('tag') ? String(fd.get('tag')).trim() : undefined,
-      featured: fd.get('featured') === 'on',
-      active: fd.get('active') === 'on',
-      features: String(fd.get('features') || '').split('\n').map((s) => s.trim()).filter(Boolean),
+      arm: state.arm,
+      name: (f('name') as HTMLInputElement).value.trim(),
+      desc: (f('desc') as HTMLTextAreaElement).value.trim(),
+      amountPaise: Math.round((Number((f('priceRupees') as HTMLInputElement).value) || 0) * 100),
+      durationLabel: (f('durationLabel') as HTMLInputElement).value.trim(),
+      features: (f('features') as HTMLTextAreaElement).value.split('\n').map((s) => s.trim()).filter(Boolean),
+      calEventTypeId: cal === '' ? null : Number(cal),
+      badge: state.arm === 'counselling' && f('badge') ? (f('badge') as HTMLInputElement).value.trim() : '',
+      tag: state.arm === 'mentoring' && f('tag') ? (f('tag') as HTMLInputElement).value.trim() : '',
+      featured: state.arm === 'counselling' && (f('featured') as HTMLInputElement).checked,
+      active: (f('active') as HTMLInputElement).checked,
+      order: Number((f('order') as HTMLInputElement).value) || 0,
     };
+  }
+
+  function updatePreview() {
+    const o = readForm();
+    pv.classList.toggle('featured', !!o.featured);
+    pv.classList.toggle('mentoring', o.arm === 'mentoring');
+    const badgeText = o.arm === 'counselling' ? o.badge : o.tag;
+    const badgeEl = pv.querySelector('.pv-badge') as HTMLElement;
+    badgeEl.hidden = !badgeText;
+    badgeEl.textContent = badgeText || '';
+    (pv.querySelector('.pv-name') as HTMLElement).textContent = o.name || 'Session name';
+    const descEl = pv.querySelector('.pv-desc') as HTMLElement;
+    descEl.textContent = o.desc || '';
+    descEl.hidden = !o.desc;
+    (pv.querySelector('.pv-feats') as HTMLElement).innerHTML = o.features.map((x) => `<li>${escapeHtml(x)}</li>`).join('');
+    (pv.querySelector('.pv-price') as HTMLElement).textContent = rupeeFmt(o.amountPaise);
+    (pv.querySelector('.pv-dur') as HTMLElement).textContent = o.durationLabel || '';
+  }
+
+  function escapeHtml(s: string) {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  }
+
+  function flash(msg: string, ok = true) {
+    status.textContent = msg;
+    status.hidden = false;
+    status.className = 'ed-status ' + (ok ? 'ok' : 'err');
+    if (ok) setTimeout(() => { status.hidden = true; }, 2500);
   }
 
   async function api(payload: any) {
@@ -110,86 +277,130 @@ const groups: { label: string; arm: 'counselling' | 'mentoring'; list: Offering[
     return d;
   }
 
-  function flash(el: HTMLElement, msg: string, ok = true) {
-    el.textContent = msg;
-    el.hidden = false;
-    el.className = 'o-status ' + (ok ? 'ok' : 'err');
-    if (ok) setTimeout(() => { el.hidden = true; }, 2500);
-  }
+  // wire up
+  document.querySelectorAll('.arm-tab').forEach((t) =>
+    t.addEventListener('click', () => setArm((t as HTMLElement).dataset.arm as any))
+  );
+  picker.addEventListener('change', onPick);
+  form.addEventListener('input', updatePreview);
 
-  document.querySelectorAll<HTMLFormElement>('.oedit').forEach((form) => {
-    const status = form.querySelector('.o-status') as HTMLElement;
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await api({ action: 'save', offering: collect(form) });
-        flash(status, 'Saved ✓');
-      } catch (ex: any) {
-        flash(status, ex.message, false);
-      }
-    });
-    form.querySelector('.o-del')?.addEventListener('click', async () => {
-      const id = form.dataset.id;
-      if (!id || !confirm(`Delete "${id}"? It will be removed from the site.`)) return;
-      try {
-        await api({ action: 'delete', id });
-        form.remove();
-      } catch (ex: any) {
-        flash(status, ex.message, false);
-      }
-    });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const o = readForm();
+    if (!o.id) { flash('Please enter a name (and id for new sessions).', false); return; }
+    if (!o.name) { flash('Please enter a name.', false); return; }
+    try {
+      const d = await api({ action: 'save', offering: o });
+      const i = DATA.findIndex((x) => x.id === d.offering.id);
+      if (i >= 0) DATA[i] = d.offering; else DATA.push(d.offering);
+      state.mode = 'edit';
+      form.dataset.id = d.offering.id;
+      delBtn.hidden = false;
+      syncMode();
+      renderPicker(d.offering.id);
+      flash('Saved ✓');
+    } catch (ex: any) {
+      flash(ex.message, false);
+    }
   });
 
-  document.querySelectorAll<HTMLFormElement>('.o-add').forEach((form) => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const offering = collect(form);
-      if (!offering.id) { alert('Please enter an id (lowercase-with-hyphens).'); return; }
-      offering.active = true;
-      offering.order = 999;
-      offering.features = [];
-      try {
-        await api({ action: 'save', offering });
-        location.reload();
-      } catch (ex: any) {
-        alert(ex.message);
-      }
-    });
+  delBtn.addEventListener('click', async () => {
+    const id = form.dataset.id;
+    if (!id || !confirm('Delete this session? It will be removed from the site.')) return;
+    try {
+      await api({ action: 'delete', id });
+      const i = DATA.findIndex((x) => x.id === id);
+      if (i >= 0) DATA.splice(i, 1);
+      renderPicker();
+      flash('Deleted ✓');
+    } catch (ex: any) {
+      flash(ex.message, false);
+    }
   });
+
+  setArm('counselling');
 </script>
 
-<style>
-  .admin { padding: clamp(36px, 6vw, 64px) 32px 80px; max-width: 920px; }
-  .admin-head { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 14px; flex-wrap: wrap; }
-  .admin-head h1 { font-size: clamp(28px, 4vw, 42px); margin-top: 4px; }
-  .admin-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .admin-actions .pill { font-size: 13px; padding: 9px 16px; }
-  .hint { font-size: 14px; color: var(--body); max-width: 70ch; margin-bottom: 30px; }
-  .arm { margin-bottom: 44px; }
-  .arm-title { font-size: clamp(20px, 3vw, 28px); color: var(--ink); margin-bottom: 16px; }
-  .o-list { display: flex; flex-direction: column; gap: 18px; }
-  .oedit { background: var(--cream2); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; }
-  .oedit-top { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
-  .o-name { flex: 1; font-family: var(--display); font-size: 19px; font-weight: 600; color: var(--ink); background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 13px; }
-  .chk { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
-  .o-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
-  .oedit label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: var(--sage-dk); letter-spacing: 0.02em; }
-  .chk.feat { flex-direction: row; align-self: end; padding-bottom: 9px; color: var(--ink); }
-  .oedit input, .oedit textarea { font-family: var(--sans); font-size: 14px; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font-weight: 400; }
-  .oedit input:focus, .oedit textarea:focus { outline: none; border-color: var(--clay); }
-  .o-block { margin-bottom: 14px; }
-  .oedit textarea { resize: vertical; }
-  .oedit-actions { display: flex; align-items: center; gap: 12px; }
-  .oedit-actions .pill { padding: 9px 22px; }
-  .o-del { background: none; border: 1px solid var(--line); color: var(--clay-dk); border-radius: 100px; padding: 8px 16px; font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; }
-  .o-del:hover { background: var(--clay); color: #fff; border-color: var(--clay); }
-  .o-status { font-size: 13px; font-weight: 600; }
-  .o-status.ok { color: var(--sage-dk); }
-  .o-status.err { color: var(--clay-dk); }
-  .o-id { margin-left: auto; font-size: 11px; color: #a08e76; }
-  .o-add { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
-  .o-add input { font-family: var(--sans); font-size: 13.5px; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
-  .o-add input[name='id'], .o-add input[name='name'] { flex: 1 1 160px; }
-  .o-add input[type='number'] { width: 110px; }
-  .o-add .pill { padding: 9px 18px; }
+<style is:global>
+  /* admin offerings editor — global because the live preview/list update via JS (innerHTML),
+     which would miss Astro's scoped attribute. All selectors are oadmin-prefixed. */
+  .oadmin { padding: clamp(28px, 6vw, 56px) 20px 90px; max-width: 980px; }
+  .oa-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+  .oa-head h1 { font-size: clamp(26px, 5vw, 40px); margin-top: 4px; }
+  .oa-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .oa-actions .pill { font-size: 12.5px; padding: 8px 14px; }
+  .oa-hint { font-size: 14px; color: var(--body); max-width: 64ch; margin-bottom: 22px; line-height: 1.5; }
+
+  .arm-tabs { display: flex; gap: 6px; background: var(--cream2); border: 1px solid var(--line); border-radius: 100px; padding: 5px; margin-bottom: 18px; }
+  .arm-tab { flex: 1; border: none; background: none; font-family: var(--sans); font-size: 13.5px; font-weight: 600; color: var(--body); padding: 11px 12px; border-radius: 100px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .arm-tab.is-on { background: var(--clay); color: #fff; }
+
+  .picker { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .picker > span { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-dk); font-weight: 700; }
+  .picker select { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--ink); padding: 13px 16px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; cursor: pointer; }
+  .picker select:focus { outline: none; border-color: var(--clay); }
+
+  .editor-grid { display: grid; grid-template-columns: 1fr; gap: 26px; }
+
+  /* live preview */
+  .pv-col { order: -1; }
+  .pv-label, .pv-note { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage-dk); font-weight: 700; }
+  .pv-label { margin-bottom: 10px; }
+  .pv-note { text-transform: none; letter-spacing: 0; font-weight: 500; color: #a08e76; margin-top: 10px; font-size: 12px; }
+  .pv { display: flex; flex-direction: column; background: var(--cream2); border: 1px solid var(--line); border-radius: 22px; padding: 26px 24px; box-shadow: 0 24px 50px -34px rgba(58, 46, 35, 0.4); }
+  .pv.featured { background: linear-gradient(165deg, #4a3a2c, var(--dark)); border-color: transparent; color: #e9ddcd; }
+  .pv-badge { align-self: flex-start; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dark); background: var(--sand); padding: 5px 12px; border-radius: 100px; margin-bottom: 12px; }
+  .pv.mentoring .pv-badge { background: var(--sand); }
+  .pv-name { font-size: 24px; color: var(--ink); }
+  .pv.featured .pv-name { color: #fff; }
+  .pv-desc { font-size: 13.5px; margin: 9px 0 0; color: var(--body); }
+  .pv.featured .pv-desc { color: #d8c6ad; }
+  .pv-feats { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+  .pv-feats li { position: relative; padding-left: 19px; font-size: 13px; color: var(--ink); line-height: 1.4; }
+  .pv-feats li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+  .pv.featured .pv-feats li { color: #e0d2bf; }
+  .pv.featured .pv-feats li::before { background: var(--sand); }
+  .pv-price { font-size: 40px; font-weight: 600; color: var(--clay); line-height: 1; margin-top: 18px; }
+  .pv.featured .pv-price { color: var(--sand); }
+  .pv-dur { font-size: 12.5px; color: #a08e76; margin-top: 6px; }
+  .pv.featured .pv-dur { color: #d8c6ad; }
+  .pv-btn { margin-top: 20px; text-align: center; font-size: 14px; font-weight: 600; color: #fff; background: var(--clay); padding: 13px; border-radius: 100px; }
+  .pv.featured .pv-btn { background: var(--sand); color: var(--dark); }
+
+  /* form */
+  .ed-form { display: flex; flex-direction: column; gap: 16px; }
+  .ed-field { display: flex; flex-direction: column; gap: 6px; }
+  .ed-label { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+  .ed-label em { font-weight: 500; font-style: normal; color: #a08e76; }
+  .ed-form input, .ed-form textarea, .ed-form select { font-family: var(--sans); font-size: 16px; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); width: 100%; }
+  .ed-form textarea { resize: vertical; line-height: 1.5; }
+  .ed-form input::placeholder, .ed-form textarea::placeholder { color: #c0b09b; }
+  .ed-form input:focus, .ed-form textarea:focus { outline: none; border-color: var(--clay); box-shadow: 0 0 0 3px rgba(168, 93, 66, 0.1); }
+  .ed-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .ed-row .ed-field { flex: 1 1 150px; }
+  .ed-adv { border: 1px solid var(--line); border-radius: 12px; background: var(--cream2); overflow: hidden; }
+  .ed-adv summary { cursor: pointer; padding: 12px 16px; font-size: 13.5px; font-weight: 700; color: var(--sage-dk); list-style: none; }
+  .ed-adv summary::-webkit-details-marker { display: none; }
+  .ed-adv summary::before { content: '⚙  '; }
+  .ed-adv-body { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 16px; }
+  .ed-toggle { display: flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 600; color: var(--ink); cursor: pointer; }
+  .ed-toggle input { width: auto; }
+  .ed-toggle.active-row { background: rgba(107, 143, 113, 0.1); border: 1px solid rgba(107, 143, 113, 0.25); border-radius: 12px; padding: 13px 15px; }
+  .ed-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .ed-actions .pill { padding: 13px 26px; }
+  .ed-del { background: none; border: 1px solid var(--line); color: var(--clay-dk); border-radius: 100px; padding: 11px 18px; font-family: var(--sans); font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .ed-del:hover { background: var(--clay); color: #fff; border-color: var(--clay); }
+  .ed-status { font-size: 13.5px; font-weight: 600; }
+  .ed-status.ok { color: var(--sage-dk); }
+  .ed-status.err { color: var(--clay-dk); }
+
+  /* arm/mode-driven field visibility */
+  .oadmin[data-arm='mentoring'] .cnsl-only { display: none; }
+  .oadmin[data-arm='counselling'] .ment-only { display: none; }
+  .oadmin[data-mode='edit'] .new-only { display: none; }
+
+  @media (min-width: 760px) {
+    .editor-grid { grid-template-columns: 1.1fr 0.9fr; align-items: start; }
+    .pv-col { order: 0; position: sticky; top: 24px; }
+  }
 </style>
