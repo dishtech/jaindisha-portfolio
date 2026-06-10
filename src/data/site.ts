@@ -38,13 +38,12 @@ export const practitioner = {
   role: 'PsyD trainee · Counsellor & psychology mentor',
   tagline: 'A guide for the mind, a companion for the heart.',
   experience: '7+ yrs',
-  location: 'Dehradun & online',
-  trainee: 'PsyD trainee, not a licensed psychologist.',
+  location: 'Online sessions',
 } as const;
 
 export const social = {
-  linkedin: 'https://www.linkedin.com/in/jaindish',
-  email: '', // real booking email to be supplied before launch (M6)
+  linkedin: 'https://www.linkedin.com/in/jaindish/',
+  email: 'hello@jaindisha.in',
 } as const;
 
 /* ---- images (warm, faceless placeholders; swap to Disha's real photos at M6) ---- */
@@ -115,7 +114,7 @@ export const steps: Step[] = [
   {
     n: '2',
     title: 'We meet',
-    body: 'A 40-minute session online. No pressure, we move entirely at your pace.',
+    body: 'A 40-minute session online over Google Meet. No pressure, we move entirely at your pace.',
   },
   {
     n: '3',
@@ -156,7 +155,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'Are sessions online?',
-    a: 'Yes. Sessions are held online over video, so you can join from wherever feels safe and comfortable.',
+    a: 'Yes, every session is online over video on Google Meet. I don’t offer in-person or walk-in sessions, so you can join from wherever feels safe and comfortable.',
     review: true,
   },
   {
@@ -165,7 +164,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'Can I reschedule a session?',
-    a: 'Of course. Life happens. You can reschedule up to 24 hours before your session, no fuss.',
+    a: 'Of course, life happens. You can reschedule once, up to 24 hours before your session.',
     review: true,
   },
   {

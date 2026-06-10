@@ -1,19 +1,14 @@
 ---
 import Legal from '../layouts/Legal.astro';
-import { social, practitioner } from '../data/site';
+import { social } from '../data/site';
 const email = social.email || 'hello@jaindisha.in';
 ---
 
 <Legal
   title="Contact"
-  updated="8 June 2026"
+  updated="10 June 2026"
   description="How to reach Disha Jain for counselling, mentoring, bookings and any questions."
 >
-  <p class="note">
-    <strong>Needs your details.</strong> Razorpay activation requires a real, working email (and
-    usually a phone and address). Confirm the <span class="todo">[bracketed]</span> items.
-  </p>
-
   <p>
     The easiest way to start is to book a session from the site. For anything else, here is how to
     reach me.
@@ -21,17 +16,13 @@ const email = social.email || 'hello@jaindisha.in';
 
   <h2>Email</h2>
   <p>
-    <a href={`mailto:${email}`}>{email}</a> <span class="todo">[Confirm this mailbox is set up at
-    Hostinger.]</span> I usually reply within one to two working days.
+    <a href={`mailto:${email}`}>{email}</a>. I usually reply within one to two working days.
   </p>
 
-  <h2>Phone</h2>
-  <p><span class="todo">[Add a contact phone number if you want one shown, e.g. for Razorpay.]</span></p>
-
-  <h2>Where I work from</h2>
+  <h2>How sessions happen</h2>
   <p>
-    {practitioner.location}. <span class="todo">[Add a full address if required for Razorpay /
-    business verification.]</span>
+    All sessions are <strong>online, over video on Google Meet</strong>. I don't offer in-person or
+    walk-in sessions, so you can join from wherever feels safe and comfortable.
   </p>
 
   <h2>Find me elsewhere</h2>
